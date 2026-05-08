@@ -4,17 +4,17 @@ import { LandingPage } from "@/components/LandingPage";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "FlexiVida — Alívio Natural para Dores nas Articulações em 30 Dias" },
+      { title: "Nosso Céu — Mapa Estelar Personalizado | Presente de Dia dos Namorados" },
       {
         name: "description",
         content:
-          "Fórmula com Colágeno Tipo 2 + Cúrcuma + MSM. Reduza dores no joelho, coluna e articulações de forma natural. Garantia de 30 dias ou seu dinheiro de volta.",
+          "Eternize a noite mais especial de vocês em um quadro com o mapa real das estrelas. Personalizado, emoldurado e embalado pra presentear. Entrega garantida no Dia dos Namorados.",
       },
-      { property: "og:title", content: "FlexiVida — Volte a se mover sem dor" },
+      { property: "og:title", content: "Nosso Céu — O presente que ela vai abrir chorando" },
       {
         property: "og:description",
         content:
-          "Fórmula natural usada por mais de 47.000 brasileiros para aliviar dores articulares. Garantia de 30 dias.",
+          "Mapa estelar personalizado da noite que mudou tudo. Já vem emoldurado e embalado. Edição Dia dos Namorados com 40% OFF.",
       },
       { property: "og:type", content: "website" },
     ],
