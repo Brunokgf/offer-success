@@ -4,17 +4,17 @@ import { LandingPage } from "@/components/LandingPage";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nosso Céu — Mapa Estelar Personalizado | Presente de Dia dos Namorados" },
+      { title: "Kit Paixão — O Presente Definitivo de Dia dos Namorados" },
       {
         name: "description",
         content:
-          "Eternize a noite mais especial de vocês em um quadro com o mapa real das estrelas. Personalizado, emoldurado e embalado pra presentear. Entrega garantida no Dia dos Namorados.",
+          "Joias, rosas, lingerie, vinho e mais — tudo numa única caixa surpresa. O Kit Paixão é o presente que transforma a noite de vocês. Entrega garantida no Dia dos Namorados.",
       },
-      { property: "og:title", content: "Nosso Céu — O presente que ela vai abrir chorando" },
+      { property: "og:title", content: "Kit Paixão — O presente que ela nunca vai esquecer" },
       {
         property: "og:description",
         content:
-          "Mapa estelar personalizado da noite que mudou tudo. Já vem emoldurado e embalado. Edição Dia dos Namorados com 40% OFF.",
+          "Joias rubi, lingerie, rosas, vinho e ursinho — tudo numa caixa só. Edição Dia dos Namorados com até 40% OFF.",
       },
       { property: "og:type", content: "website" },
     ],
