@@ -12,8 +12,15 @@ import {
   Wine,
   Gift,
   Package,
+  X,
 } from "lucide-react";
 import kit from "@/assets/kit-paixao.jpg";
+import prodJoias from "@/assets/produto-joias.webp";
+import prodCaixa from "@/assets/produto-caixa.webp";
+import prodRosas from "@/assets/produto-rosas.webp";
+import prodBaloes from "@/assets/produto-baloes.webp";
+import prodLingerie from "@/assets/produto-lingerie.webp";
+import prodVinho from "@/assets/produto-vinho.webp";
 
 function CountdownBar() {
   // Conta regressiva até 12 de junho do ano corrente (Dia dos Namorados)
@@ -286,9 +293,37 @@ type Plan = {
   oldTotal: string;
   economia: string;
   features: string[];
+  produtos: { img: string; nome: string }[];
 };
 
 function Offer() {
+  const [openPlan, setOpenPlan] = useState<Plan | null>(null);
+  useEffect(() => {
+    if (!openPlan) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpenPlan(null);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [openPlan]);
+
+  const itensRomance = [
+    { img: prodJoias, nome: "Conjunto joias coração rubi" },
+    { img: prodCaixa, nome: "Caixa coração + ursinho" },
+  ];
+  const itensPaixao = [
+    ...itensRomance,
+    { img: prodRosas, nome: "Buquê de 12 rosas vermelhas" },
+    { img: prodLingerie, nome: "Lingerie vermelha em renda" },
+    { img: prodVinho, nome: "Vinho tinto Reserva 750ml" },
+  ];
+  const itensInferno = [
+    ...itensPaixao,
+    { img: prodBaloes, nome: "Balões 'TE AMO' + pétalas" },
+  ];
+
   const plans: Plan[] = [
     {
       name: "Romance",
@@ -302,6 +337,7 @@ function Offer() {
         "Velas perfumadas formato coração",
         "Caixa presente lacrada",
       ],
+      produtos: itensRomance,
     },
     {
       name: "Paixão",
@@ -319,6 +355,7 @@ function Offer() {
         "FRETE EXPRESSO grátis",
         "BÔNUS: cartão escrito à mão",
       ],
+      produtos: itensPaixao,
     },
     {
       name: "Inferno",
@@ -335,6 +372,7 @@ function Offer() {
         "Caixa de bombons gourmet",
         "Embalagem luxo + laço de cetim",
       ],
+      produtos: itensInferno,
     },
   ];
   return (
@@ -385,16 +423,16 @@ function Offer() {
                   </li>
                 ))}
               </ul>
-              <a
-                href="#"
-                className={`block text-center px-5 py-3.5 rounded-xl font-bold transition-transform hover:scale-[1.02] ${
+              <button
+                onClick={() => setOpenPlan(p)}
+                className={`block w-full text-center px-5 py-3.5 rounded-xl font-bold transition-transform hover:scale-[1.02] ${
                   p.highlight
                     ? "bg-gradient-brand text-brand-foreground shadow-warm"
                     : "bg-ink text-background"
                 }`}
               >
                 QUERO ESSE
-              </a>
+              </button>
               <div className="text-center text-xs text-muted-foreground mt-3">
                 Pix, boleto ou até 12x no cartão
               </div>
@@ -406,6 +444,72 @@ function Offer() {
           Última data de pedido com entrega garantida no Dia dos Namorados: <strong className="text-foreground">04 de junho</strong>
         </p>
       </div>
+      {openPlan && (
+        <div
+          className="fixed inset-0 z-50 bg-ink/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
+          onClick={() => setOpenPlan(null)}
+        >
+          <div
+            className="bg-card rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-warm border border-border"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between rounded-t-3xl z-10">
+              <div>
+                <div className="text-xs text-brand font-bold uppercase tracking-wider">Kit {openPlan.name}</div>
+                <div className="font-display text-xl font-black text-ink">O que vai chegar na sua casa</div>
+              </div>
+              <button
+                onClick={() => setOpenPlan(null)}
+                className="w-10 h-10 rounded-full bg-muted hover:bg-accent flex items-center justify-center transition-colors"
+                aria-label="Fechar"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+                {openPlan.produtos.map((item) => (
+                  <div key={item.nome} className="bg-cream rounded-2xl overflow-hidden border border-border shadow-card">
+                    <div className="aspect-square bg-background overflow-hidden">
+                      <img
+                        src={item.img}
+                        alt={item.nome}
+                        loading="lazy"
+                        width={400}
+                        height={400}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="px-3 py-2.5">
+                      <div className="text-xs font-semibold text-ink leading-tight">{item.nome}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-cream rounded-2xl p-5 mb-5 border border-border">
+                <div className="flex items-baseline justify-between gap-3 mb-2">
+                  <span className="text-sm text-muted-foreground">Valor total do kit</span>
+                  <div className="text-right">
+                    <div className="text-sm text-muted-foreground line-through">{openPlan.oldTotal}</div>
+                    <div className="text-3xl font-black text-brand">{openPlan.total}</div>
+                  </div>
+                </div>
+                <div className="text-xs text-success font-semibold">Você economiza {openPlan.economia} · até 12x no cartão</div>
+              </div>
+              <a
+                href="#"
+                className="block text-center bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-black text-base shadow-warm hover:scale-[1.01] transition-transform"
+              >
+                FINALIZAR COMPRA · {openPlan.total}
+              </a>
+              <div className="flex items-center justify-center gap-4 mt-4 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> Compra 100% segura</span>
+                <span className="flex items-center gap-1"><Truck className="h-3.5 w-3.5" /> Frete expresso</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
