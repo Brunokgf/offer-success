@@ -14,9 +14,6 @@ import {
   Package,
 } from "lucide-react";
 import kit from "@/assets/kit-paixao.jpg";
-import casal1 from "@/assets/casal-1.jpg";
-import casal2 from "@/assets/casal-2.jpg";
-import casal3 from "@/assets/casal-3.jpg";
 
 function CountdownBar() {
   // Conta regressiva até 12 de junho do ano corrente (Dia dos Namorados)
@@ -34,11 +31,14 @@ function CountdownBar() {
     const s = Math.floor((diff % 60000) / 1000);
     return { d, h, m, s };
   };
-  const [t, setT] = useState(calc);
+  const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0 });
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
+    setMounted(true);
+    setT(calc());
     const id = setInterval(() => setT(calc()), 1000);
     return () => clearInterval(id);
-  });
+  }, []);
   const pad = (n: number) => String(n).padStart(2, "0");
   return (
     <div className="bg-night text-brand-foreground py-2.5 px-4 text-center text-sm font-medium">
@@ -46,7 +46,7 @@ function CountdownBar() {
         <Flame className="h-4 w-4 text-brand" />
         <span>Faltam</span>
         <span className="font-mono font-bold tracking-wider text-brand">
-          {t.d}d {pad(t.h)}:{pad(t.m)}:{pad(t.s)}
+          {mounted ? `${t.d}d ${pad(t.h)}:${pad(t.m)}:${pad(t.s)}` : "—"}
         </span>
         <span>para o Dia dos Namorados — últimas unidades do Kit Paixão</span>
       </span>
@@ -224,21 +224,21 @@ function Why() {
 function Testimonials() {
   const items = [
     {
-      img: casal1,
       name: "Lucas & Marina",
       city: "São Paulo/SP",
+      initials: "LM",
       text: "Cara, eu não esperava. Dei o Kit Paixão e ela ficou SEM PALAVRAS. Foi a melhor noite que a gente teve em anos. Recomendo demais.",
     },
     {
-      img: casal2,
       name: "Beatriz P.",
       city: "Florianópolis/SC",
+      initials: "BP",
       text: "Comprei pra surpreender meu marido. As joias são lindas de verdade, o vinho ótimo e a lingerie caiu perfeita. Valeu MUITO a pena.",
     },
     {
-      img: casal3,
       name: "Gabriel & Camila",
       city: "Belo Horizonte/MG",
+      initials: "GC",
       text: "Chegou em 4 dias, embalagem impecável. Ela abriu chorando e a noite... bom, a noite não dá pra contar aqui 🔥. 10/10.",
     },
   ];
@@ -254,17 +254,21 @@ function Testimonials() {
         <div className="grid md:grid-cols-3 gap-6">
           {items.map((t) => (
             <div key={t.name} className="bg-card rounded-2xl p-6 shadow-card border border-border flex flex-col">
-              <img src={t.img} alt={t.name} loading="lazy" width={768} height={768} className="w-full h-56 object-cover rounded-xl mb-5" />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-brand flex items-center justify-center text-brand-foreground font-bold shadow-warm">
+                  {t.initials}
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-ink">{t.name}</div>
+                  <div className="text-xs text-muted-foreground">{t.city}</div>
+                </div>
+              </div>
               <div className="flex mb-3">
                 {[1,2,3,4,5].map((i) => (
                   <Star key={i} className="h-4 w-4 fill-brand text-brand" />
                 ))}
               </div>
-              <p className="text-foreground italic mb-5 leading-relaxed flex-1">"{t.text}"</p>
-              <div className="pt-4 border-t border-border">
-                <div className="font-bold text-sm text-ink">{t.name}</div>
-                <div className="text-xs text-muted-foreground">{t.city}</div>
-              </div>
+              <p className="text-foreground italic leading-relaxed flex-1">"{t.text}"</p>
             </div>
           ))}
         </div>
