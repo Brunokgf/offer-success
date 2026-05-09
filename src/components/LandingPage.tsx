@@ -6,15 +6,14 @@ import {
   Check,
   Clock,
   Heart,
-  Sparkles,
+  Flame,
   ChevronDown,
-  MapPin,
-  CalendarHeart,
-  Type,
-  Package,
+  Gem,
+  Wine,
   Gift,
+  Package,
 } from "lucide-react";
-import mapa from "@/assets/mapa-estelar.png";
+import kit from "@/assets/kit-paixao.jpg";
 import casal1 from "@/assets/casal-1.jpg";
 import casal2 from "@/assets/casal-2.jpg";
 import casal3 from "@/assets/casal-3.jpg";
@@ -44,12 +43,12 @@ function CountdownBar() {
   return (
     <div className="bg-night text-brand-foreground py-2.5 px-4 text-center text-sm font-medium">
       <span className="inline-flex items-center gap-2 flex-wrap justify-center">
-        <Clock className="h-4 w-4 text-gold" />
+        <Flame className="h-4 w-4 text-brand" />
         <span>Faltam</span>
-        <span className="font-mono font-bold tracking-wider text-gold">
+        <span className="font-mono font-bold tracking-wider text-brand">
           {t.d}d {pad(t.h)}:{pad(t.m)}:{pad(t.s)}
         </span>
-        <span>para o Dia dos Namorados — peça hoje e receba a tempo</span>
+        <span>para o Dia dos Namorados — últimas unidades do Kit Paixão</span>
       </span>
     </div>
   );
@@ -60,52 +59,52 @@ function Hero() {
     <section className="bg-night-stars text-brand-foreground relative overflow-hidden">
       <div className="container mx-auto px-4 py-14 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
         <div>
-          <span className="inline-flex items-center gap-2 bg-gold/15 text-gold border border-gold/30 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-5">
-            <Sparkles className="h-3.5 w-3.5" /> Edição Dia dos Namorados
+          <span className="inline-flex items-center gap-2 bg-brand/20 text-brand border border-brand/40 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-5">
+            <Flame className="h-3.5 w-3.5" /> Edição Limitada · Dia dos Namorados
           </span>
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05] mb-5">
-            O céu da noite em que <span className="text-gold italic">tudo começou.</span>
+            Acenda a noite com o <span className="text-brand italic">Kit Paixão.</span>
           </h1>
           <p className="text-lg text-brand-foreground/80 mb-7 leading-relaxed">
-            Transforme o dia mais especial de vocês em um quadro personalizado com o <strong className="text-brand-foreground">mapa real das estrelas</strong> daquela noite. Um presente que ela vai abrir chorando.
+            Tudo que ela sonha em receber — em uma única caixa. <strong className="text-brand-foreground">Joias, rosas, lingerie, vinho e o ursinho com mensagem</strong>. O presente que vai transformar a noite de vocês.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <a
               href="#oferta"
               className="inline-flex items-center justify-center gap-2 bg-gradient-brand text-brand-foreground px-7 py-4 rounded-xl font-bold text-base shadow-warm hover:scale-[1.02] transition-transform"
             >
-              CRIAR MEU MAPA AGORA
+              QUERO MEU KIT PAIXÃO
             </a>
             <a
               href="#como-funciona"
               className="inline-flex items-center justify-center gap-2 border border-brand-foreground/30 px-7 py-4 rounded-xl font-semibold text-brand-foreground hover:bg-brand-foreground/10 transition-colors"
             >
-              Como funciona?
+              O que vem dentro?
             </a>
           </div>
           <div className="flex items-center gap-4 text-sm text-brand-foreground/70">
             <div className="flex">
               {[1, 2, 3, 4, 5].map((i) => (
-                <Star key={i} className="h-4 w-4 fill-gold text-gold" />
+                <Star key={i} className="h-4 w-4 fill-brand text-brand" />
               ))}
             </div>
-            <span><strong className="text-brand-foreground">4.9/5</strong> · 8.214 casais apaixonados</span>
+            <span><strong className="text-brand-foreground">4.9/5</strong> · 12.480 casais incendiados</span>
           </div>
         </div>
         <div className="relative flex items-center justify-center">
-          <div className="absolute inset-0 bg-gold/20 blur-3xl rounded-full" />
+          <div className="absolute inset-0 bg-brand/30 blur-3xl rounded-full" />
           <img
-            src={mapa}
-            alt="Mapa estelar personalizado emoldurado — Nosso Céu"
+            src={kit}
+            alt="Kit Paixão Dia dos Namorados — joias, rosas, lingerie e vinho"
             width={1024}
             height={1024}
-            className="relative max-w-md w-full drop-shadow-2xl"
+            className="relative max-w-md w-full rounded-3xl shadow-warm"
           />
           <div className="absolute -bottom-2 right-0 sm:right-4 bg-card text-foreground shadow-card rounded-2xl px-4 py-3 flex items-center gap-3 border border-border">
             <Gift className="h-8 w-8 text-brand" />
             <div>
-              <div className="font-bold text-sm leading-tight">Embalagem presente</div>
-              <div className="text-xs text-muted-foreground">grátis em todos os pedidos</div>
+              <div className="font-bold text-sm leading-tight">Caixa surpresa</div>
+              <div className="text-xs text-muted-foreground">embalada e lacrada</div>
             </div>
           </div>
         </div>
@@ -118,8 +117,8 @@ function TrustStrip() {
   const items = [
     { icon: Truck, label: "Entrega antes de 12/06" },
     { icon: ShieldCheck, label: "Garantia de satisfação" },
-    { icon: Gift, label: "Embalagem presente grátis" },
-    { icon: Heart, label: "+8.000 casais felizes" },
+    { icon: Gift, label: "Caixa luxo inclusa" },
+    { icon: Heart, label: "+12.000 casais felizes" },
   ];
   return (
     <div className="bg-cream border-y border-border">
@@ -138,31 +137,31 @@ function TrustStrip() {
 function HowItWorks() {
   const steps = [
     {
-      icon: CalendarHeart,
-      title: "1. Escolha a data",
-      desc: "Primeiro encontro, primeiro beijo, pedido de casamento... a noite que mudou tudo.",
+      icon: Gem,
+      title: "Joias Coração Rubi",
+      desc: "Colar, brincos e pulseira banhados a ouro com pedras vermelhas. Ela vai usar pra sempre.",
     },
     {
-      icon: MapPin,
-      title: "2. Escolha o local",
-      desc: "Calculamos o céu exato como ele estava naquela cidade, naquela noite — com precisão astronômica.",
+      icon: Heart,
+      title: "Rosas + Caixa Coração",
+      desc: "Buquê de rosas vermelhas, ursinho 'I Love You' dentro de uma caixa coração e pétalas pra criar o clima.",
     },
     {
-      icon: Type,
-      title: "3. Personalize a mensagem",
-      desc: "Frase, nomes e coordenadas. Tudo impresso em papel premium e emoldurado pra você só desembrulhar.",
+      icon: Flame,
+      title: "Lingerie + Vinho",
+      desc: "Lingerie vermelha rendada, vinho tinto Reserva e velas em formato de coração. A noite tá feita.",
     },
   ];
   return (
     <section id="como-funciona" className="py-16 lg:py-24 bg-background">
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="text-center mb-14">
-          <span className="text-brand font-semibold uppercase tracking-wider text-sm">Como funciona</span>
+          <span className="text-brand font-semibold uppercase tracking-wider text-sm">O que vem no kit</span>
           <h2 className="text-3xl lg:text-5xl font-black mt-2 text-ink">
-            Em 3 passos simples
+            3 momentos. Uma noite inesquecível.
           </h2>
           <p className="text-muted-foreground text-lg mt-3 max-w-2xl mx-auto">
-            Você cria em menos de 2 minutos. Nós produzimos e enviamos pronto pra presentear.
+            Cada item foi escolhido pra construir a noite perfeita — do "abre o presente" até o "vai dormir".
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
@@ -183,28 +182,30 @@ function HowItWorks() {
 
 function Why() {
   const items = [
-    "Mapa estelar real, calculado com dados astronômicos da NASA",
-    "Impressão giclée em papel fosco premium 250g",
-    "Moldura de madeira maciça pronta pra pendurar",
-    "Embalagem presente exclusiva — chega lacrada",
-    "Personalize nomes, data, coordenadas e mensagem",
-    "Produção em até 48h e envio expresso",
+    "Conjunto de joias coração rubi (colar + brincos + pulseira)",
+    "Buquê com 12 rosas vermelhas naturais preservadas",
+    "Caixa coração com ursinho 'I Love You' e rosas perfumadas",
+    "Lingerie vermelha em renda — tamanhos P ao GG",
+    "Vinho tinto Reserva 750ml + 2 taças de cristal",
+    "10 velas perfumadas em formato de coração",
+    "Pétalas de rosa pra espalhar no caminho",
+    "Cartão escrito à mão com a sua mensagem",
   ];
   return (
     <section className="py-16 lg:py-24 bg-cream">
       <div className="container mx-auto px-4 max-w-5xl grid md:grid-cols-2 gap-10 items-center">
         <img
-          src={casal2}
-          alt="Mulher emocionada abrindo o presente Nosso Céu"
+          src={kit}
+          alt="Itens do Kit Paixão organizados"
           loading="lazy"
           width={768}
           height={768}
-          className="rounded-3xl shadow-card w-full"
+          className="rounded-3xl shadow-warm w-full"
         />
         <div>
-          <span className="text-brand font-semibold uppercase tracking-wider text-sm">Por que vão amar</span>
+          <span className="text-brand font-semibold uppercase tracking-wider text-sm">Tudo que vem dentro</span>
           <h2 className="text-3xl lg:text-4xl font-black mt-2 mb-6 text-ink leading-tight">
-            Não é só um quadro. É a noite de vocês <em className="text-brand">eternizada.</em>
+            Não é um presente. É <em className="text-brand">uma noite inteira</em> dentro de uma caixa.
           </h2>
           <ul className="space-y-3">
             {items.map((it) => (
@@ -226,28 +227,28 @@ function Testimonials() {
       img: casal1,
       name: "Lucas & Marina",
       city: "São Paulo/SP",
-      text: "Dei pra ela no jantar de aniversário de namoro. Ela chorou MUITO. Disse que foi o presente mais lindo que já recebeu. Vale cada centavo.",
+      text: "Cara, eu não esperava. Dei o Kit Paixão e ela ficou SEM PALAVRAS. Foi a melhor noite que a gente teve em anos. Recomendo demais.",
     },
     {
       img: casal2,
       name: "Beatriz P.",
       city: "Florianópolis/SC",
-      text: "Comprei pra dar pro meu marido no Dia dos Namorados do ano passado. Hoje está na parede da sala. Todo mundo que entra em casa pergunta sobre.",
+      text: "Comprei pra surpreender meu marido. As joias são lindas de verdade, o vinho ótimo e a lingerie caiu perfeita. Valeu MUITO a pena.",
     },
     {
       img: casal3,
       name: "Gabriel & Camila",
       city: "Belo Horizonte/MG",
-      text: "Pedi com a data do nosso pedido de casamento. Chegou super rápido, embalagem linda. Ela abriu e ficou sem palavras. 10/10.",
+      text: "Chegou em 4 dias, embalagem impecável. Ela abriu chorando e a noite... bom, a noite não dá pra contar aqui 🔥. 10/10.",
     },
   ];
   return (
     <section className="py-16 lg:py-24 bg-background">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-12">
-          <span className="text-brand font-semibold uppercase tracking-wider text-sm">Histórias reais</span>
+          <span className="text-brand font-semibold uppercase tracking-wider text-sm">Quem comprou, ama</span>
           <h2 className="text-3xl lg:text-5xl font-black mt-2 text-ink">
-            Casais que viraram clientes
+            Casais que viveram a noite
           </h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
@@ -256,7 +257,7 @@ function Testimonials() {
               <img src={t.img} alt={t.name} loading="lazy" width={768} height={768} className="w-full h-56 object-cover rounded-xl mb-5" />
               <div className="flex mb-3">
                 {[1,2,3,4,5].map((i) => (
-                  <Star key={i} className="h-4 w-4 fill-gold text-gold" />
+                  <Star key={i} className="h-4 w-4 fill-brand text-brand" />
                 ))}
               </div>
               <p className="text-foreground italic mb-5 leading-relaxed flex-1">"{t.text}"</p>
@@ -286,47 +287,49 @@ type Plan = {
 function Offer() {
   const plans: Plan[] = [
     {
-      name: "Mini",
-      size: "Tamanho A4 (21x30cm)",
-      total: "R$ 97",
-      oldTotal: "R$ 149",
-      economia: "R$ 52",
-      features: [
-        "Mapa estelar personalizado",
-        "Moldura de madeira inclusa",
-        "Embalagem presente",
-        "Envio em até 5 dias úteis",
-      ],
-    },
-    {
-      name: "Clássico",
-      size: "Tamanho A3 (30x40cm)",
-      badge: "MAIS PEDIDO",
-      highlight: true,
-      total: "R$ 147",
-      oldTotal: "R$ 247",
+      name: "Romance",
+      size: "Kit essencial",
+      total: "R$ 197",
+      oldTotal: "R$ 297",
       economia: "R$ 100",
       features: [
-        "Mapa estelar personalizado",
-        "Moldura de madeira premium",
-        "Embalagem presente exclusiva",
-        "Envio EXPRESSO grátis",
-        "BÔNUS: Cartão escrito à mão",
+        "Conjunto de joias coração rubi",
+        "Caixa coração com ursinho + rosas",
+        "Velas perfumadas formato coração",
+        "Caixa presente lacrada",
       ],
     },
     {
-      name: "Eterno",
-      size: "Tamanho A2 (40x60cm)",
-      badge: "EDIÇÃO LIMITADA",
-      total: "R$ 227",
-      oldTotal: "R$ 397",
-      economia: "R$ 170",
+      name: "Paixão",
+      size: "Kit completo · MAIS VENDIDO",
+      badge: "MAIS VENDIDO",
+      highlight: true,
+      total: "R$ 297",
+      oldTotal: "R$ 497",
+      economia: "R$ 200",
       features: [
-        "Mapa estelar personalizado",
-        "Moldura nobre + vidro antirreflexo",
+        "TUDO do kit Romance +",
+        "Buquê com 12 rosas vermelhas",
+        "Lingerie vermelha em renda",
+        "Vinho tinto Reserva 750ml",
+        "FRETE EXPRESSO grátis",
+        "BÔNUS: cartão escrito à mão",
+      ],
+    },
+    {
+      name: "Inferno",
+      size: "Kit luxo · Edição limitada",
+      badge: "EDIÇÃO LIMITADA",
+      total: "R$ 497",
+      oldTotal: "R$ 797",
+      economia: "R$ 300",
+      features: [
+        "TUDO do kit Paixão +",
+        "2 taças de cristal personalizadas",
+        "Pétalas de rosa naturais (200g)",
+        "Balões coração 'TE AMO' metalizados",
+        "Caixa de bombons gourmet",
         "Embalagem luxo + laço de cetim",
-        "Envio EXPRESSO grátis",
-        "BÔNUS: Cartão + álbum de memórias digital",
       ],
     },
   ];
@@ -335,12 +338,12 @@ function Offer() {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-12">
           <span className="inline-block bg-destructive/10 text-destructive font-bold text-xs uppercase tracking-wider px-3 py-1.5 rounded-full mb-3">
-            Promoção Dia dos Namorados — 40% OFF
+            Promoção Dia dos Namorados — até 40% OFF
           </span>
           <h2 className="text-3xl lg:text-5xl font-black text-ink mb-3">
-            Escolha seu mapa
+            Escolha seu Kit Paixão
           </h2>
-          <p className="text-muted-foreground text-lg">Quanto maior o quadro, maior o impacto da surpresa.</p>
+          <p className="text-muted-foreground text-lg">Quanto mais completo o kit, mais inesquecível a noite.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6 items-stretch">
           {plans.map((p) => (
@@ -415,10 +418,10 @@ function Guarantee() {
           </div>
           <div>
             <h3 className="text-2xl lg:text-3xl font-black text-ink mb-3">
-              Garantia "Vai Amar ou Devolvemos"
+              Garantia "Vai Incendiar ou Devolvemos"
             </h3>
             <p className="text-muted-foreground leading-relaxed">
-              Se na hora de presentear vocês não amarem o resultado, devolvemos <strong className="text-foreground">100% do seu dinheiro</strong> em até 7 dias. Você não corre nenhum risco — só o risco bom de fazer ela chorar de emoção.
+              Se ao abrir o kit vocês não amarem cada detalhe, devolvemos <strong className="text-foreground">100% do seu dinheiro</strong> em até 7 dias. Sem perguntas, sem burocracia. O único risco é a noite ficar quente demais.
             </p>
           </div>
         </div>
@@ -430,28 +433,28 @@ function Guarantee() {
 function FAQ() {
   const items = [
     {
-      q: "Como o mapa é gerado?",
-      a: "Usamos dados astronômicos reais (efemérides) pra calcular como o céu estava na data, hora e local que você escolher. É o céu de verdade — não uma ilustração genérica.",
+      q: "O que exatamente vem dentro do kit?",
+      a: "Depende do plano: o Romance traz joias + caixa coração com ursinho + velas. O Paixão adiciona buquê de rosas, lingerie, vinho e cartão. O Inferno inclui taças de cristal, pétalas, balões e bombons. Tudo embalado em caixa presente lacrada.",
     },
     {
       q: "Em quanto tempo chega?",
-      a: "Produção em até 48h + envio expresso de 2 a 5 dias úteis. Pedidos feitos até 04 de junho chegam garantidamente antes do Dia dos Namorados.",
+      a: "Envio em até 24h + entrega expressa de 2 a 5 dias úteis. Pedidos feitos até 04 de junho chegam garantidamente antes do Dia dos Namorados.",
     },
     {
-      q: "Como personalizo?",
-      a: "Após a compra você recebe um link pra preencher: data, horário, cidade, nomes e mensagem. Você ainda aprova a prévia digital antes da gente imprimir.",
+      q: "Posso escolher o tamanho da lingerie?",
+      a: "Sim. Após a compra você recebe um link pra escolher o tamanho (P, M, G ou GG) e escrever a mensagem do cartão.",
     },
     {
       q: "Vem pronto pra presentear?",
-      a: "Sim! Já chega emoldurado e dentro da nossa embalagem presente exclusiva, lacrada. É só entregar.",
+      a: "Sim! Já chega dentro da nossa caixa presente exclusiva, lacrada e com laço. É só entregar e ver a reação.",
     },
     {
-      q: "Posso escolher qualquer data?",
-      a: "Qualquer data dos últimos 100 anos e qualquer cidade do mundo. Pode ser primeiro encontro, casamento, nascimento de filho, o que vocês quiserem eternizar.",
+      q: "As joias são de verdade?",
+      a: "Sim — folheadas a ouro 18k com pedras de zircônia vermelha de alto brilho. Garantia de 6 meses contra oxidação. Não é bijuteria barata.",
     },
     {
-      q: "E se eu errar a data?",
-      a: "Sem problema. Você aprova a prévia antes da impressão e pode ajustar quantas vezes precisar.",
+      q: "Vem nota fiscal? Posso parcelar?",
+      a: "Sim, nota fiscal em todas as compras. Parcele em até 12x no cartão ou pague no Pix com 5% de desconto extra.",
     },
   ];
   const [open, setOpen] = useState<number | null>(0);
@@ -486,20 +489,20 @@ function FinalCTA() {
   return (
     <section className="py-16 lg:py-24 bg-night-stars text-brand-foreground">
       <div className="container mx-auto px-4 max-w-3xl text-center">
-        <Sparkles className="h-10 w-10 text-gold mx-auto mb-5" />
+        <Flame className="h-10 w-10 text-brand mx-auto mb-5" />
         <h2 className="text-3xl lg:text-5xl font-black mb-5 leading-tight font-display">
-          Esse Dia dos Namorados, dê algo que <em className="text-gold">ninguém mais vai dar.</em>
+          Esse Dia dos Namorados, faça ela dizer <em className="text-brand">"foi o melhor da minha vida".</em>
         </h2>
         <p className="text-lg text-brand-foreground/80 mb-8">
-          Flores murcham. Chocolate acaba. Nosso Céu fica na parede de vocês pra sempre.
+          Chocolate acaba em 5 minutos. Jantar fora vocês esquecem. O Kit Paixão vira a história que vocês vão contar pra sempre.
         </p>
         <a
           href="#oferta"
           className="inline-flex items-center justify-center bg-gradient-brand text-brand-foreground px-8 py-5 rounded-xl font-black text-lg shadow-warm hover:scale-[1.02] transition-transform"
         >
-          CRIAR MEU MAPA AGORA
+          QUERO MEU KIT PAIXÃO
         </a>
-        <p className="mt-5 text-sm text-brand-foreground/60">Garantia de satisfação · Embalagem presente · Entrega garantida</p>
+        <p className="mt-5 text-sm text-brand-foreground/60">Garantia de satisfação · Caixa presente · Entrega expressa</p>
       </div>
     </section>
   );
@@ -509,9 +512,9 @@ function Footer() {
   return (
     <footer className="bg-ink text-background/80 py-10">
       <div className="container mx-auto px-4 max-w-5xl text-center text-sm space-y-3">
-        <div className="font-display font-black text-gold text-2xl italic">Nosso Céu</div>
+        <div className="font-display font-black text-brand text-2xl italic">Kit Paixão</div>
         <p className="max-w-2xl mx-auto opacity-70">
-          Presentes personalizados feitos à mão no Brasil. Cada mapa é único como a sua história.
+          Presentes que viram histórias. Montado e enviado do Brasil com muito amor (e fogo).
         </p>
         <div className="flex flex-wrap justify-center gap-4 text-xs opacity-70 pt-3">
           <a href="#" className="hover:opacity-100">Política de Privacidade</a>
@@ -519,7 +522,7 @@ function Footer() {
           <a href="#" className="hover:opacity-100">Trocas e Devoluções</a>
           <a href="#" className="hover:opacity-100">Contato</a>
         </div>
-        <p className="text-xs opacity-50 pt-2">© 2026 Nosso Céu. Todos os direitos reservados.</p>
+        <p className="text-xs opacity-50 pt-2">© 2026 Kit Paixão. Todos os direitos reservados.</p>
       </div>
     </footer>
   );
