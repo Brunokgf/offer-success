@@ -21,6 +21,7 @@ import prodRosas from "@/assets/produto-rosas.webp";
 import prodBaloes from "@/assets/produto-baloes.webp";
 import prodLingerie from "@/assets/produto-lingerie.webp";
 import prodVinho from "@/assets/produto-vinho.webp";
+import prodBombons from "@/assets/produto-bombons.jpg";
 
 function CountdownBar() {
   // Conta regressiva até 12 de junho do ano corrente (Dia dos Namorados)
@@ -322,6 +323,7 @@ function Offer() {
   const itensInferno = [
     ...itensPaixao,
     { img: prodBaloes, nome: "Balões 'TE AMO' + pétalas" },
+    { img: prodBombons, nome: "Caixa de bombons gourmet AMOR" },
   ];
 
   const plans: Plan[] = [
