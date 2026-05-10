@@ -299,8 +299,10 @@ type Plan = {
 
 function Offer() {
   const [openPlan, setOpenPlan] = useState<Plan | null>(null);
+  const [activeImg, setActiveImg] = useState(0);
   useEffect(() => {
     if (!openPlan) return;
+    setActiveImg(0);
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpenPlan(null);
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -452,61 +454,113 @@ function Offer() {
           onClick={() => setOpenPlan(null)}
         >
           <div
-            className="bg-card rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-warm border border-border"
+            className="bg-card rounded-3xl max-w-5xl w-full max-h-[92vh] overflow-y-auto shadow-warm border border-border"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between rounded-t-3xl z-10">
-              <div>
-                <div className="text-xs text-brand font-bold uppercase tracking-wider">Kit {openPlan.name}</div>
-                <div className="font-display text-xl font-black text-ink">O que vai chegar na sua casa</div>
-              </div>
-              <button
-                onClick={() => setOpenPlan(null)}
-                className="w-10 h-10 rounded-full bg-muted hover:bg-accent flex items-center justify-center transition-colors"
-                aria-label="Fechar"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-                {openPlan.produtos.map((item) => (
-                  <div key={item.nome} className="bg-cream rounded-2xl overflow-hidden border border-border shadow-card">
-                    <div className="aspect-square bg-background overflow-hidden">
-                      <img
-                        src={item.img}
-                        alt={item.nome}
-                        loading="lazy"
-                        width={400}
-                        height={400}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="px-3 py-2.5">
-                      <div className="text-xs font-semibold text-ink leading-tight">{item.nome}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="bg-cream rounded-2xl p-5 mb-5 border border-border">
-                <div className="flex items-baseline justify-between gap-3 mb-2">
-                  <span className="text-sm text-muted-foreground">Valor total do kit</span>
-                  <div className="text-right">
-                    <div className="text-sm text-muted-foreground line-through">{openPlan.oldTotal}</div>
-                    <div className="text-3xl font-black text-brand">{openPlan.total}</div>
-                  </div>
+            <button
+              onClick={() => setOpenPlan(null)}
+              className="absolute right-4 top-4 z-20 w-10 h-10 rounded-full bg-card/90 hover:bg-accent flex items-center justify-center transition-colors shadow-card border border-border"
+              aria-label="Fechar"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="grid md:grid-cols-2 gap-0">
+              {/* GALERIA estilo e-commerce */}
+              <div className="bg-cream p-5 md:p-8 flex flex-col gap-4 md:rounded-l-3xl">
+                <div className="aspect-square bg-background rounded-2xl overflow-hidden border border-border shadow-card">
+                  <img
+                    src={openPlan.produtos[activeImg]?.img}
+                    alt={openPlan.produtos[activeImg]?.nome}
+                    className="w-full h-full object-cover transition-opacity"
+                  />
                 </div>
-                <div className="text-xs text-success font-semibold">Você economiza {openPlan.economia} · até 12x no cartão</div>
+                <div className="grid grid-cols-5 gap-2">
+                  {openPlan.produtos.map((item, i) => (
+                    <button
+                      key={item.nome}
+                      onClick={() => setActiveImg(i)}
+                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                        activeImg === i ? "border-brand ring-2 ring-brand/30" : "border-border opacity-70 hover:opacity-100"
+                      }`}
+                      aria-label={item.nome}
+                    >
+                      <img src={item.img} alt={item.nome} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+                <div className="text-xs text-muted-foreground text-center font-medium">
+                  {openPlan.produtos[activeImg]?.nome}
+                </div>
               </div>
-              <a
-                href="#"
-                className="block text-center bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-black text-base shadow-warm hover:scale-[1.01] transition-transform"
-              >
-                FINALIZAR COMPRA · {openPlan.total}
-              </a>
-              <div className="flex items-center justify-center gap-4 mt-4 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> Compra 100% segura</span>
-                <span className="flex items-center gap-1"><Truck className="h-3.5 w-3.5" /> Frete expresso</span>
+
+              {/* DETALHES estilo e-commerce */}
+              <div className="p-6 md:p-8 flex flex-col">
+                <div className="text-xs text-brand font-bold uppercase tracking-widest mb-2">
+                  {openPlan.badge ?? "Edição Dia dos Namorados"}
+                </div>
+                <h3 className="font-display text-2xl md:text-3xl font-black text-ink leading-tight mb-2">
+                  Kit {openPlan.name} — {openPlan.size}
+                </h3>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex text-gold">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className="h-4 w-4 fill-current" />
+                    ))}
+                  </div>
+                  <span className="text-xs text-muted-foreground">4.9 · 12.480 casais incendiados</span>
+                </div>
+
+                <div className="flex items-baseline gap-3 mb-1">
+                  <span className="text-sm text-muted-foreground line-through">{openPlan.oldTotal}</span>
+                  <span className="text-4xl font-black text-brand">{openPlan.total}</span>
+                </div>
+                <div className="text-xs text-success font-bold mb-1">
+                  Você economiza {openPlan.economia}
+                </div>
+                <div className="text-xs text-muted-foreground mb-5">
+                  ou 12x sem juros no cartão
+                </div>
+
+                <div className="bg-cream rounded-xl p-4 mb-5 border border-border">
+                  <div className="text-xs font-bold text-ink uppercase tracking-wider mb-3">
+                    {openPlan.produtos.length} itens neste kit
+                  </div>
+                  <ul className="space-y-2">
+                    {openPlan.produtos.map((item, i) => (
+                      <li
+                        key={item.nome}
+                        onClick={() => setActiveImg(i)}
+                        className={`flex items-center gap-3 cursor-pointer p-1.5 rounded-lg transition-colors ${
+                          activeImg === i ? "bg-accent" : "hover:bg-background/60"
+                        }`}
+                      >
+                        <div className="w-10 h-10 rounded-md overflow-hidden border border-border bg-background flex-shrink-0">
+                          <img src={item.img} alt={item.nome} className="w-full h-full object-cover" />
+                        </div>
+                        <span className="text-sm font-medium text-ink leading-tight">{item.nome}</span>
+                        <Check className="h-4 w-4 text-success ml-auto flex-shrink-0" />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <a
+                  href="#"
+                  className="block text-center bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-black text-base shadow-warm hover:scale-[1.01] transition-transform mb-3"
+                >
+                  COMPRAR AGORA · {openPlan.total}
+                </a>
+                <div className="grid grid-cols-3 gap-2 text-[11px] text-muted-foreground">
+                  <span className="flex flex-col items-center gap-1 text-center">
+                    <ShieldCheck className="h-4 w-4 text-brand" /> Compra segura
+                  </span>
+                  <span className="flex flex-col items-center gap-1 text-center">
+                    <Truck className="h-4 w-4 text-brand" /> Frete expresso
+                  </span>
+                  <span className="flex flex-col items-center gap-1 text-center">
+                    <Heart className="h-4 w-4 text-brand" /> Garantia 7 dias
+                  </span>
+                </div>
               </div>
             </div>
           </div>
