@@ -165,8 +165,11 @@ function HowItWorks() {
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="text-center mb-14">
           <span className="text-brand font-semibold uppercase tracking-wider text-sm">O que vem no kit</span>
-          <h2 className="text-3xl lg:text-5xl font-black mt-2 text-ink">
-            3 momentos. Uma noite inesquecível.
+          <h2 className="text-4xl lg:text-6xl font-black mt-3 leading-tight">
+            <span className="bg-gradient-brand bg-clip-text text-transparent drop-shadow-[0_0_30px_oklch(0.55_0.24_25/0.5)]">
+              3 momentos.
+            </span>{" "}
+            <span className="text-gold italic font-display">Uma noite inesquecível.</span>
           </h2>
           <p className="text-muted-foreground text-lg mt-3 max-w-2xl mx-auto">
             Cada item foi escolhido pra construir a noite perfeita — do "abre o presente" até o "vai dormir".
@@ -429,13 +432,11 @@ function Offer() {
               </ul>
               <button
                 onClick={() => setOpenPlan(p)}
-                className={`block w-full text-center px-5 py-3.5 rounded-xl font-bold transition-transform hover:scale-[1.02] ${
-                  p.highlight
-                    ? "bg-gradient-brand text-brand-foreground shadow-warm"
-                    : "bg-ink text-background"
-                }`}
+                className="group relative block w-full text-center px-5 py-4 rounded-xl font-black tracking-wider text-base bg-gradient-brand text-brand-foreground shadow-warm transition-all hover:scale-[1.03] hover:shadow-[0_25px_60px_-15px_oklch(0.55_0.24_25/0.8)] ring-2 ring-gold/40 hover:ring-gold animate-pulse-slow"
               >
+                <Flame className="inline-block h-5 w-5 mr-2 -mt-0.5" />
                 QUERO ESSE
+                <Flame className="inline-block h-5 w-5 ml-2 -mt-0.5" />
               </button>
               <div className="text-center text-xs text-muted-foreground mt-3">
                 Pix, boleto ou até 12x no cartão
