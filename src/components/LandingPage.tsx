@@ -215,7 +215,7 @@ function Why() {
         />
         <div>
           <span className="text-brand font-semibold uppercase tracking-wider text-sm">Tudo que vem dentro</span>
-          <h2 className="text-3xl lg:text-4xl font-black mt-2 mb-6 text-ink leading-tight">
+          <h2 className="text-3xl lg:text-4xl font-black mt-2 mb-6 text-foreground leading-tight">
             Não é um presente. É <em className="text-brand">uma noite inteira</em> dentro de uma caixa.
           </h2>
           <ul className="space-y-3">
@@ -383,13 +383,13 @@ function Offer() {
     },
   ];
   return (
-    <section id="oferta" className="py-16 lg:py-24 bg-gradient-to-b from-cream to-background">
+    <section id="oferta" className="py-16 lg:py-24">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-12">
           <span className="inline-block bg-destructive/10 text-destructive font-bold text-xs uppercase tracking-wider px-3 py-1.5 rounded-full mb-3">
             Promoção Dia dos Namorados — até 40% OFF
           </span>
-          <h2 className="text-3xl lg:text-5xl font-black text-ink mb-3">
+          <h2 className="text-3xl lg:text-5xl font-black text-foreground mb-3">
             Escolha seu Kit Paixão
           </h2>
           <p className="text-muted-foreground text-lg">Quanto mais completo o kit, mais inesquecível a noite.</p>
