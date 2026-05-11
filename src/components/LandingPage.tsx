@@ -129,7 +129,7 @@ function TrustStrip() {
     { icon: Heart, label: "+12.000 casais felizes" },
   ];
   return (
-    <div className="bg-cream border-y border-border">
+    <div className="border-y border-border">
       <div className="container mx-auto px-4 py-5 grid grid-cols-2 md:grid-cols-4 gap-4">
         {items.map((it) => (
           <div key={it.label} className="flex items-center gap-2 justify-center text-sm font-medium text-foreground text-center">
@@ -161,7 +161,7 @@ function HowItWorks() {
     },
   ];
   return (
-    <section id="como-funciona" className="py-16 lg:py-24 bg-background">
+    <section id="como-funciona" className="py-16 lg:py-24">
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="text-center mb-14">
           <span className="text-brand font-semibold uppercase tracking-wider text-sm">O que vem no kit</span>
@@ -203,7 +203,7 @@ function Why() {
     "Cartão escrito à mão com a sua mensagem",
   ];
   return (
-    <section className="py-16 lg:py-24 bg-cream">
+    <section className="py-16 lg:py-24">
       <div className="container mx-auto px-4 max-w-5xl grid md:grid-cols-2 gap-10 items-center">
         <img
           src={kit}
@@ -254,7 +254,7 @@ function Testimonials() {
     },
   ];
   return (
-    <section className="py-16 lg:py-24 bg-background">
+    <section className="py-16 lg:py-24">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-12">
           <span className="text-brand font-semibold uppercase tracking-wider text-sm">Quem comprou, ama</span>
@@ -573,7 +573,7 @@ function Offer() {
 
 function Guarantee() {
   return (
-    <section className="py-16 lg:py-20 bg-background">
+    <section className="py-16 lg:py-20">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-card border-2 border-brand/30 rounded-3xl p-8 lg:p-12 grid md:grid-cols-[auto_1fr] gap-8 items-center shadow-card">
           <div className="flex justify-center">
@@ -624,7 +624,7 @@ function FAQ() {
   ];
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="py-16 lg:py-24 bg-cream">
+    <section className="py-16 lg:py-24">
       <div className="container mx-auto px-4 max-w-3xl">
         <h2 className="text-3xl lg:text-5xl font-black text-center mb-12 text-ink">
           Perguntas frequentes
@@ -675,7 +675,7 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer className="bg-ink text-background/80 py-10">
+    <footer className="py-10 border-t border-border">
       <div className="container mx-auto px-4 max-w-5xl text-center text-sm space-y-3">
         <div className="font-display font-black text-brand text-2xl italic">Kit Paixão</div>
         <p className="max-w-2xl mx-auto opacity-70">
