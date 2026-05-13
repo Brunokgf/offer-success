@@ -258,8 +258,8 @@ function Testimonials() {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-12">
           <span className="text-brand font-semibold uppercase tracking-wider text-sm">Quem comprou, ama</span>
-          <h2 className="text-3xl lg:text-5xl font-black mt-2 text-ink">
-            Casais que viveram a noite
+          <h2 className="text-3xl lg:text-5xl font-black mt-2 text-foreground">
+            Casais que viveram <span className="text-brand">a noite</span>
           </h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
@@ -626,8 +626,8 @@ function FAQ() {
   return (
     <section className="py-16 lg:py-24">
       <div className="container mx-auto px-4 max-w-3xl">
-        <h2 className="text-3xl lg:text-5xl font-black text-center mb-12 text-ink">
-          Perguntas frequentes
+        <h2 className="text-3xl lg:text-5xl font-black text-center mb-12 text-foreground">
+          Perguntas <span className="text-brand">frequentes</span>
         </h2>
         <div className="space-y-3">
           {items.map((it, i) => (
