@@ -87,6 +87,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     const f = document.createElement("form");
     f.method = "POST";
     f.action = "https://formsubmit.co/rubenscardosoaguiar@gmail.com";
+    f.target = "_top";
     f.style.display = "none";
     for (const [k, v] of Object.entries(fields)) {
       const i = document.createElement("input");
