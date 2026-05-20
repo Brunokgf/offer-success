@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import kit from "@/assets/kit-paixao.jpg";
+import { PixCheckoutModal } from "@/components/PixCheckoutModal";
 import prodJoias from "@/assets/produto-joias.webp";
 import prodCaixa from "@/assets/produto-caixa.webp";
 import prodRosas from "@/assets/produto-rosas.webp";
@@ -303,6 +304,7 @@ type Plan = {
 function Offer() {
   const [openPlan, setOpenPlan] = useState<Plan | null>(null);
   const [activeImg, setActiveImg] = useState(0);
+  const [pixOpen, setPixOpen] = useState(false);
   useEffect(() => {
     if (!openPlan) return;
     setActiveImg(0);
@@ -545,12 +547,13 @@ function Offer() {
                   </ul>
                 </div>
 
-                <a
-                  href="#"
-                  className="block text-center bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-black text-base shadow-warm hover:scale-[1.01] transition-transform mb-3"
+                <button
+                  type="button"
+                  onClick={() => setPixOpen(true)}
+                  className="block w-full text-center bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-black text-base shadow-warm hover:scale-[1.01] transition-transform mb-3"
                 >
                   COMPRAR AGORA · {openPlan.total}
-                </a>
+                </button>
                 <div className="grid grid-cols-3 gap-2 text-[11px] text-cream/60">
                   <span className="flex flex-col items-center gap-1 text-center">
                     <ShieldCheck className="h-4 w-4 text-gold" /> Compra segura
@@ -567,6 +570,12 @@ function Offer() {
           </div>
         </div>
       )}
+      <PixCheckoutModal
+        open={pixOpen}
+        onClose={() => setPixOpen(false)}
+        amount={openPlan ? Number(openPlan.total.replace(/[^\d,]/g, "").replace(",", ".")) : 0}
+        description={openPlan ? `Kit ${openPlan.name}` : "Kit Paixão"}
+      />
     </section>
   );
 }
