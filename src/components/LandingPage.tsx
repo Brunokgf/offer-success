@@ -375,6 +375,8 @@ function Offer() {
       economia: "R$ 300",
       features: [
         "TUDO do kit Paixão +",
+        "🎁 BRINDE: Lingerie vermelha em renda",
+        "🎁 BRINDE: Vinho tinto Reserva 750ml",
         "2 taças de cristal personalizadas",
         "Pétalas de rosa naturais (200g)",
         "Balões coração 'TE AMO' metalizados",
