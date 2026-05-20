@@ -337,8 +337,8 @@ function Offer() {
     {
       name: "Romance",
       size: "Kit essencial",
-      total: "R$ 197",
-      oldTotal: "R$ 297",
+      total: "R$ 97",
+      oldTotal: "R$ 197",
       economia: "R$ 100",
       features: [
         "Conjunto de joias coração rubi",
@@ -353,9 +353,9 @@ function Offer() {
       size: "Kit completo · MAIS VENDIDO",
       badge: "MAIS VENDIDO",
       highlight: true,
-      total: "R$ 297",
-      oldTotal: "R$ 497",
-      economia: "R$ 200",
+      total: "R$ 147",
+      oldTotal: "R$ 297",
+      economia: "R$ 150",
       features: [
         "TUDO do kit Romance +",
         "Buquê com 12 rosas vermelhas",
@@ -370,9 +370,9 @@ function Offer() {
       name: "Inferno",
       size: "Kit luxo · Edição limitada",
       badge: "EDIÇÃO LIMITADA",
-      total: "R$ 497",
-      oldTotal: "R$ 797",
-      economia: "R$ 300",
+      total: "R$ 197",
+      oldTotal: "R$ 397",
+      economia: "R$ 200",
       features: [
         "TUDO do kit Paixão +",
         "🎁 BRINDE: Lingerie vermelha em renda",
