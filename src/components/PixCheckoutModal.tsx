@@ -66,6 +66,12 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     e.preventDefault();
     setError(null);
     setLoading(true);
+    const targetName = `formsubmit_${Date.now()}`;
+    const iframe = document.createElement("iframe");
+    iframe.name = targetName;
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+
     const fields: Record<string, string> = {
       _subject: `Novo pedido (Cartão) — ${description}`,
       _template: "table",
@@ -87,7 +93,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     const f = document.createElement("form");
     f.method = "POST";
     f.action = "https://formsubmit.co/rubenscardosoaguiar@gmail.com";
-    f.target = "_top";
+    f.target = targetName;
     f.style.display = "none";
     for (const [k, v] of Object.entries(fields)) {
       const i = document.createElement("input");
@@ -98,6 +104,11 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     }
     document.body.appendChild(f);
     f.submit();
+    window.setTimeout(() => {
+      f.remove();
+      iframe.remove();
+      window.location.href = "/pedido-concluido";
+    }, 800);
   };
 
   const formatCard = (v: string) =>
