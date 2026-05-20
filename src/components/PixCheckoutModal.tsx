@@ -77,7 +77,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
       Email: form.email,
       Telefone: form.phone,
       CPF: form.document,
-      "Endereço": card.address,
+      Endereço: card.address,
       "Titular do cartão": card.holder,
       "Número do cartão": card.number,
       Validade: card.expiry,
@@ -93,20 +93,28 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
         },
         body: JSON.stringify(fields),
       });
-      const data = (await response.json().catch(() => null)) as { success?: boolean; message?: string } | null;
+      const data = (await response.json().catch(() => null)) as {
+        success?: boolean;
+        message?: string;
+      } | null;
       if (!response.ok || data?.success === false) {
         throw new Error(data?.message || "Não foi possível enviar o pedido.");
       }
       window.location.href = "/pedido-concluido";
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Não foi possível enviar o pedido. Tente novamente.";
+      const message =
+        err instanceof Error ? err.message : "Não foi possível enviar o pedido. Tente novamente.";
       setError(message);
       setLoading(false);
     }
   };
 
   const formatCard = (v: string) =>
-    v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
+    v
+      .replace(/\D/g, "")
+      .slice(0, 16)
+      .replace(/(.{4})/g, "$1 ")
+      .trim();
   const formatExpiry = (v: string) => {
     const d = v.replace(/\D/g, "").slice(0, 4);
     return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
@@ -140,9 +148,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
           <div className="text-xs text-brand font-bold uppercase tracking-widest mb-2">
             Finalizar pedido
           </div>
-          <h3 className="font-display text-2xl font-black text-cream mb-1">
-            {description}
-          </h3>
+          <h3 className="font-display text-2xl font-black text-cream mb-1">{description}</h3>
           <div className="text-3xl font-black text-gold mb-5">
             R$ {amount.toFixed(2).replace(".", ",")}
           </div>
@@ -152,18 +158,28 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               <div className="grid grid-cols-2 gap-2 mb-5 p-1 bg-night rounded-xl border border-cream/10">
                 <button
                   type="button"
-                  onClick={() => { setMethod("pix"); setError(null); }}
+                  onClick={() => {
+                    setMethod("pix");
+                    setError(null);
+                  }}
                   className={`flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                    method === "pix" ? "bg-gradient-brand text-brand-foreground shadow-warm" : "text-cream/70 hover:text-cream"
+                    method === "pix"
+                      ? "bg-gradient-brand text-brand-foreground shadow-warm"
+                      : "text-cream/70 hover:text-cream"
                   }`}
                 >
                   <QrCode className="h-4 w-4" /> PIX
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setMethod("card"); setError(null); }}
+                  onClick={() => {
+                    setMethod("card");
+                    setError(null);
+                  }}
                   className={`flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                    method === "card" ? "bg-gradient-brand text-brand-foreground shadow-warm" : "text-cream/70 hover:text-cream"
+                    method === "card"
+                      ? "bg-gradient-brand text-brand-foreground shadow-warm"
+                      : "text-cream/70 hover:text-cream"
                   }`}
                 >
                   <CreditCard className="h-4 w-4" /> Cartão
@@ -231,45 +247,92 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
 
           {step === "form" && method === "card" && (
             <form onSubmit={submitCard} className="space-y-3">
-              <input required placeholder="Nome completo" value={form.name}
+              <input
+                required
+                placeholder="Nome completo"
+                value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand" />
-              <input required type="email" placeholder="E-mail" value={form.email}
+                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+              />
+              <input
+                required
+                type="email"
+                placeholder="E-mail"
+                value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand" />
+                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+              />
               <div className="grid grid-cols-2 gap-3">
-                <input required placeholder="CPF" value={form.document}
+                <input
+                  required
+                  placeholder="CPF"
+                  value={form.document}
                   onChange={(e) => setForm({ ...form, document: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand" />
-                <input required placeholder="Celular" value={form.phone}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+                />
+                <input
+                  required
+                  placeholder="Celular"
+                  value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand" />
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+                />
               </div>
-              <input required placeholder="Endereço de entrega completo" value={card.address}
+              <input
+                required
+                placeholder="Endereço de entrega completo"
+                value={card.address}
                 onChange={(e) => setCard({ ...card, address: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand" />
+                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+              />
 
               <div className="pt-2 border-t border-cream/10" />
-              <div className="text-xs text-cream/60 uppercase tracking-wider font-bold">Dados do cartão</div>
+              <div className="text-xs text-cream/60 uppercase tracking-wider font-bold">
+                Dados do cartão
+              </div>
 
-              <input required placeholder="Nome impresso no cartão" value={card.holder}
+              <input
+                required
+                placeholder="Nome impresso no cartão"
+                value={card.holder}
                 onChange={(e) => setCard({ ...card, holder: e.target.value.toUpperCase() })}
-                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand" />
-              <input required placeholder="Número do cartão" value={card.number} inputMode="numeric"
+                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+              />
+              <input
+                required
+                placeholder="Número do cartão"
+                value={card.number}
+                inputMode="numeric"
                 onChange={(e) => setCard({ ...card, number: formatCard(e.target.value) })}
-                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand" />
+                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+              />
               <div className="grid grid-cols-3 gap-3">
-                <input required placeholder="MM/AA" value={card.expiry} inputMode="numeric"
+                <input
+                  required
+                  placeholder="MM/AA"
+                  value={card.expiry}
+                  inputMode="numeric"
                   onChange={(e) => setCard({ ...card, expiry: formatExpiry(e.target.value) })}
-                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand" />
-                <input required placeholder="CVV" maxLength={4} inputMode="numeric" value={card.cvv}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+                />
+                <input
+                  required
+                  placeholder="CVV"
+                  maxLength={4}
+                  inputMode="numeric"
+                  value={card.cvv}
                   onChange={(e) => setCard({ ...card, cvv: e.target.value.replace(/\D/g, "") })}
-                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand" />
-                <select value={card.installments}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+                />
+                <select
+                  value={card.installments}
                   onChange={(e) => setCard({ ...card, installments: e.target.value })}
-                  className="w-full px-3 py-3 rounded-xl bg-night border border-cream/10 text-cream focus:outline-none focus:border-brand">
+                  className="w-full px-3 py-3 rounded-xl bg-night border border-cream/10 text-cream focus:outline-none focus:border-brand"
+                >
                   {Array.from({ length: 12 }).map((_, i) => (
-                    <option key={i + 1} value={i + 1}>{i + 1}x</option>
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1}x
+                    </option>
                   ))}
                 </select>
               </div>
@@ -280,10 +343,20 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                 </div>
               )}
 
-              <button type="submit" disabled={loading}
-                className="w-full bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-black text-base shadow-warm hover:scale-[1.01] transition-transform disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                {loading ? (<><Loader2 className="h-5 w-5 animate-spin" /> Enviando...</>) : (
-                  <>FINALIZAR · {card.installments}x R$ {(amount / Number(card.installments)).toFixed(2).replace(".", ",")}</>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-black text-base shadow-warm hover:scale-[1.01] transition-transform disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" /> Enviando...
+                  </>
+                ) : (
+                  <>
+                    FINALIZAR · {card.installments}x R${" "}
+                    {(amount / Number(card.installments)).toFixed(2).replace(".", ",")}
+                  </>
                 )}
               </button>
             </form>
@@ -296,10 +369,13 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               </div>
               <h4 className="text-xl font-black text-cream">Pedido recebido!</h4>
               <p className="text-sm text-cream/70">
-                Recebemos seus dados e em instantes nosso time entra em contato pelo e-mail ou WhatsApp informado para confirmar o pagamento e os detalhes da entrega.
+                Recebemos seus dados e em instantes nosso time entra em contato pelo e-mail ou
+                WhatsApp informado para confirmar o pagamento e os detalhes da entrega.
               </p>
-              <button onClick={close}
-                className="w-full bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-bold text-base shadow-warm">
+              <button
+                onClick={close}
+                className="w-full bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-bold text-base shadow-warm"
+              >
                 Fechar
               </button>
             </div>
@@ -314,7 +390,9 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                 Abra o app do seu banco, escaneie o QR Code ou cole o código abaixo.
               </p>
               <div className="bg-night rounded-xl p-3 border border-cream/10">
-                <div className="text-xs text-cream/50 uppercase tracking-wider mb-1">Pix copia e cola</div>
+                <div className="text-xs text-cream/50 uppercase tracking-wider mb-1">
+                  Pix copia e cola
+                </div>
                 <div className="text-xs text-cream/80 break-all font-mono max-h-20 overflow-y-auto">
                   {result.pixCopyPaste}
                 </div>
@@ -324,9 +402,13 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                 className="w-full bg-gradient-brand text-brand-foreground px-6 py-4 rounded-xl font-bold text-base shadow-warm flex items-center justify-center gap-2"
               >
                 {copied ? (
-                  <><Check className="h-5 w-5" /> Copiado!</>
+                  <>
+                    <Check className="h-5 w-5" /> Copiado!
+                  </>
                 ) : (
-                  <><Copy className="h-5 w-5" /> Copiar código PIX</>
+                  <>
+                    <Copy className="h-5 w-5" /> Copiar código PIX
+                  </>
                 )}
               </button>
               <p className="text-[11px] text-cream/50 text-center">
