@@ -55,8 +55,8 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
         setResult(res);
         setStep("qr");
       }
-    } catch (err: any) {
-      setError(err?.message || "Erro inesperado.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro inesperado.");
     } finally {
       setLoading(false);
     }
