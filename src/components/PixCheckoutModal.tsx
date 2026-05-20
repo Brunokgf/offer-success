@@ -93,13 +93,14 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
         },
         body: JSON.stringify(fields),
       });
-      const data = await response.json().catch(() => null);
+      const data = (await response.json().catch(() => null)) as { success?: boolean; message?: string } | null;
       if (!response.ok || data?.success === false) {
         throw new Error(data?.message || "Não foi possível enviar o pedido.");
       }
       window.location.href = "/pedido-concluido";
-    } catch (err: any) {
-      setError(err?.message || "Não foi possível enviar o pedido. Tente novamente.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Não foi possível enviar o pedido. Tente novamente.";
+      setError(message);
       setLoading(false);
     }
   };
