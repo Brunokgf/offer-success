@@ -359,8 +359,8 @@ function Offer() {
       features: [
         "TUDO do kit Romance +",
         "Buquê com 12 rosas vermelhas",
-        "Lingerie vermelha em renda",
-        "Vinho tinto Reserva 750ml",
+        "🎁 BRINDE: Lingerie vermelha em renda",
+        "🎁 BRINDE: Vinho tinto Reserva 750ml",
         "FRETE EXPRESSO grátis",
         "BÔNUS: cartão escrito à mão",
       ],
