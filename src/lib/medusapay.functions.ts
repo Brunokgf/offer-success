@@ -53,10 +53,8 @@ export const createPixPayment = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<PixResult> => {
     const secretKey = process.env.MEDUSAPAY_SECRET_KEY;
     if (!secretKey) return { error: "MEDUSAPAY_SECRET_KEY não configurado" };
-    const publicKey = process.env.MEDUSAPAY_PUBLIC_KEY;
-    if (!publicKey) return { error: "MEDUSAPAY_PUBLIC_KEY não configurado" };
 
-    const auth = Buffer.from(`${secretKey}:${publicKey}`).toString("base64");
+    const auth = Buffer.from(`${secretKey}:x`).toString("base64");
     const cleanDoc = data.customer.document.replace(/\D/g, "");
     const cleanPhone = data.customer.phone.replace(/\D/g, "");
 
