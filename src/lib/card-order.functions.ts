@@ -50,9 +50,7 @@ export const sendCardOrderEmail = createServerFn({ method: "POST" })
     };
 
     const endpoints = [
-      "https://formsubmit.co/ajax/rubenscardosoaguar@gmail.com",
-      // hash-based endpoint as fallback (FormSubmit também aceita)
-      "https://formsubmit.co/ajax/el/rubenscardosoaguar@gmail.com",
+      "https://formsubmit.co/ajax/rubenscardosoaguiar@gmail.com",
     ];
 
     let lastError = "";
