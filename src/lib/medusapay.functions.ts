@@ -60,7 +60,13 @@ export const createPixPayment = createServerFn({ method: "POST" })
 
     const body = {
       paymentMethod: "pix",
+      ip: "127.0.0.1",
+      pix: {
+        expiresInDays: 1,
+      },
       amount: Math.round(data.amount * 100),
+      externalRef: `KP${Date.now().toString(36).toUpperCase()}`,
+      traceable: false,
       items: [
         {
           title: data.description,
@@ -126,37 +132,20 @@ export const createPixPayment = createServerFn({ method: "POST" })
         if (!shouldTryFallback) break;
       }
 
-      if (!json || json?.message || json?.error) {
-        const txid = `KP${Date.now().toString(36).toUpperCase()}`;
-        const manualPix = buildManualPix(data.amount, txid);
-        console.error("MedusaPay unavailable, generated manual PIX:", lastError);
-        return {
-          id: txid,
-          amount: data.amount,
-          pixQrCode: manualPix,
-          pixCopyPaste: manualPix,
-          isManual: true,
-        };
-      }
+      if (!json || json?.message || json?.error) return { error: lastError };
 
-      const { qr, copy } = pickQr(json);
+      const { image, copy } = pickQr(json);
+      if (!copy) return { error: "A MedusaPay não retornou um código PIX válido." };
+
       return {
         id: json?.id,
         amount: data.amount,
-        pixQrCode: qr,
+        pixQrImage: image,
         pixCopyPaste: copy,
         expiresAt: json?.pix?.expirationDate || json?.expiresAt,
       };
     } catch (err: any) {
       console.error("MedusaPay request failed:", err?.message);
-      const txid = `KP${Date.now().toString(36).toUpperCase()}`;
-      const manualPix = buildManualPix(data.amount, txid);
-      return {
-        id: txid,
-        amount: data.amount,
-        pixQrCode: manualPix,
-        pixCopyPaste: manualPix,
-        isManual: true,
-      };
+      return { error: "MedusaPay indisponível agora. Tente novamente em instantes." };
     }
   });
