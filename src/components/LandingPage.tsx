@@ -167,13 +167,13 @@ function HowItWorks() {
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="text-center mb-14">
           <span className="text-brand font-semibold uppercase tracking-wider text-sm">O que vem no kit</span>
-          <h2 className="text-4xl lg:text-6xl font-black mt-3 leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black mt-3 leading-tight">
             <span className="bg-gradient-brand bg-clip-text text-transparent drop-shadow-[0_0_30px_oklch(0.55_0.24_25/0.5)]">
               3 momentos.
             </span>{" "}
             <span className="text-gold italic font-display">Uma noite inesquecível.</span>
           </h2>
-          <p className="text-muted-foreground text-lg mt-3 max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-base sm:text-lg mt-3 max-w-2xl mx-auto">
             Cada item foi escolhido pra construir a noite perfeita — do "abre o presente" até o "vai dormir".
           </p>
         </div>
@@ -217,7 +217,7 @@ function Why() {
         />
         <div>
           <span className="text-brand font-semibold uppercase tracking-wider text-sm">Tudo que vem dentro</span>
-          <h2 className="text-3xl lg:text-4xl font-black mt-2 mb-6 text-foreground leading-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mt-2 mb-6 text-foreground leading-tight">
             Não é um presente. É <em className="text-brand">uma noite inteira</em> dentro de uma caixa.
           </h2>
           <ul className="space-y-3">
@@ -260,7 +260,7 @@ function Testimonials() {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-12">
           <span className="text-brand font-semibold uppercase tracking-wider text-sm">Quem comprou, ama</span>
-          <h2 className="text-3xl lg:text-5xl font-black mt-2 text-foreground">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black mt-2 text-foreground">
             Casais que viveram <span className="text-brand">a noite</span>
           </h2>
         </div>
@@ -394,16 +394,16 @@ function Offer() {
           <span className="inline-block bg-destructive/10 text-destructive font-bold text-xs uppercase tracking-wider px-3 py-1.5 rounded-full mb-3">
             Promoção Dia dos Namorados — até 40% OFF
           </span>
-          <h2 className="text-3xl lg:text-5xl font-black text-foreground mb-3">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black text-foreground mb-3">
             Escolha seu Kit Paixão
           </h2>
-          <p className="text-muted-foreground text-lg">Quanto mais completo o kit, mais inesquecível a noite.</p>
+          <p className="text-muted-foreground text-base sm:text-lg">Quanto mais completo o kit, mais inesquecível a noite.</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6 items-stretch">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 items-stretch">
           {plans.map((p) => (
             <div
               key={p.name}
-              className={`relative rounded-2xl p-7 border-2 flex flex-col ${
+              className={`relative rounded-2xl p-5 sm:p-7 border-2 flex flex-col ${
                 p.highlight
                   ? "bg-card border-brand shadow-warm md:scale-105 z-10"
                   : "bg-card border-border shadow-card"
@@ -470,9 +470,9 @@ function Offer() {
             >
               <X className="h-5 w-5" />
             </button>
-            <div className="grid md:grid-cols-2 gap-0">
+          <div className="grid md:grid-cols-2 gap-0">
               {/* GALERIA estilo e-commerce */}
-              <div className="bg-night p-5 md:p-8 flex flex-col gap-4 md:rounded-l-3xl">
+            <div className="bg-night p-4 sm:p-5 md:p-8 flex flex-col gap-3 sm:gap-4 md:rounded-l-3xl">
                 <div className="aspect-square bg-ink rounded-2xl overflow-hidden border border-cream/10 shadow-card">
                   <img
                     src={openPlan.produtos[activeImg]?.img}
@@ -480,7 +480,7 @@ function Offer() {
                     className="w-full h-full object-cover transition-opacity"
                   />
                 </div>
-                <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
                   {openPlan.produtos.map((item, i) => (
                     <button
                       key={item.nome}
@@ -500,11 +500,11 @@ function Offer() {
               </div>
 
               {/* DETALHES estilo e-commerce */}
-              <div className="p-6 md:p-8 flex flex-col bg-ink">
+              <div className="p-5 sm:p-6 md:p-8 flex flex-col bg-ink">
                 <div className="text-xs text-brand font-bold uppercase tracking-widest mb-2">
                   {openPlan.badge ?? "Edição Dia dos Namorados"}
                 </div>
-                <h3 className="font-display text-2xl md:text-3xl font-black text-cream leading-tight mb-2">
+                <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-black text-cream leading-tight mb-2">
                   Kit {openPlan.name} — {openPlan.size}
                 </h3>
                 <div className="flex items-center gap-2 mb-4">
@@ -638,7 +638,7 @@ function FAQ() {
   return (
     <section className="py-16 lg:py-24">
       <div className="container mx-auto px-4 max-w-3xl">
-        <h2 className="text-3xl lg:text-5xl font-black text-center mb-12 text-foreground">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black text-center mb-10 sm:mb-12 text-foreground">
           Perguntas <span className="text-brand">frequentes</span>
         </h2>
         <div className="space-y-3">
@@ -667,15 +667,15 @@ function FinalCTA() {
     <section className="py-16 lg:py-24 bg-night-stars text-brand-foreground">
       <div className="container mx-auto px-4 max-w-3xl text-center">
         <Flame className="h-10 w-10 text-brand mx-auto mb-5" />
-        <h2 className="text-3xl lg:text-5xl font-black mb-5 leading-tight font-display">
+        <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black mb-5 leading-tight font-display">
           Esse Dia dos Namorados, faça ela dizer <em className="text-brand">"foi o melhor da minha vida".</em>
         </h2>
-        <p className="text-lg text-brand-foreground/80 mb-8">
+        <p className="text-base sm:text-lg text-brand-foreground/80 mb-8">
           Chocolate acaba em 5 minutos. Jantar fora vocês esquecem. O Kit Paixão vira a história que vocês vão contar pra sempre.
         </p>
         <a
           href="#oferta"
-          className="inline-flex items-center justify-center bg-gradient-brand text-brand-foreground px-8 py-5 rounded-xl font-black text-lg shadow-warm hover:scale-[1.02] transition-transform"
+          className="inline-flex items-center justify-center bg-gradient-brand text-brand-foreground px-7 sm:px-8 py-4 sm:py-5 rounded-xl font-black text-base sm:text-lg shadow-warm hover:scale-[1.02] transition-transform"
         >
           QUERO MEU KIT PAIXÃO
         </a>
