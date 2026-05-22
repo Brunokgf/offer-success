@@ -70,14 +70,21 @@ export const createPixPayment = createServerFn({ method: "POST" })
       let lastError = "Falha ao gerar PIX. Tente novamente.";
 
       for (const endpoint of endpoints) {
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            Authorization: `Basic ${auth}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        });
+        let res: Response;
+        try {
+          res = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              Authorization: `Basic ${auth}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          });
+        } catch (err: any) {
+          lastError = err?.message || lastError;
+          console.error("MedusaPay request failed:", endpoint, lastError);
+          continue;
+        }
 
         const ct = res.headers.get("content-type") || "";
         if (!ct.includes("application/json")) {
