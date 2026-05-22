@@ -18,6 +18,7 @@ export type PixResult = {
   pixCopyPaste?: string;
   amount?: number;
   expiresAt?: string;
+  isManual?: boolean;
   error?: string;
 };
 
@@ -26,6 +27,48 @@ function pickQr(data: any): { qr?: string; copy?: string } {
   const qr = pix.qrcode || pix.qr_code || pix.qrCode || data?.qr_code || data?.qrcode;
   const copy = pix.qrcode || pix.copy_paste || pix.copyPaste || data?.copy_paste || qr;
   return { qr, copy };
+}
+
+function emv(id: string, value: string) {
+  return `${id}${String(value.length).padStart(2, "0")}${value}`;
+}
+
+function crc16(payload: string) {
+  let crc = 0xffff;
+  for (let i = 0; i < payload.length; i++) {
+    crc ^= payload.charCodeAt(i) << 8;
+    for (let j = 0; j < 8; j++) {
+      crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1;
+      crc &= 0xffff;
+    }
+  }
+  return crc.toString(16).toUpperCase().padStart(4, "0");
+}
+
+function buildManualPix(amount: number, txid: string) {
+  const pixKey = process.env.PIX_KEY || "rubenscardosoaguiar@gmail.com";
+  const merchant = (process.env.PIX_MERCHANT_NAME || "RUBENS CARDOSO AGUIAR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .slice(0, 25);
+  const city = (process.env.PIX_MERCHANT_CITY || "SAO PAULO")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .slice(0, 15);
+  const account = emv("00", "BR.GOV.BCB.PIX") + emv("01", pixKey);
+  const additional = emv("05", txid.replace(/[^A-Z0-9]/gi, "").slice(0, 25) || "PEDIDO");
+  const withoutCrc =
+    emv("00", "01") +
+    emv("26", account) +
+    emv("52", "0000") +
+    emv("53", "986") +
+    emv("54", amount.toFixed(2)) +
+    emv("58", "BR") +
+    emv("59", merchant) +
+    emv("60", city) +
+    emv("62", additional) +
+    "6304";
+  return `${withoutCrc}${crc16(withoutCrc)}`;
 }
 
 export const createPixPayment = createServerFn({ method: "POST" })
@@ -61,26 +104,62 @@ export const createPixPayment = createServerFn({ method: "POST" })
     };
 
     try {
-      const res = await fetch("https://api.v2.medusapay.com.br/v1/transactions", {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${auth}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+      const endpoints = [
+        "https://api.v2.medusapay.com.br/v1/transactions",
+        "https://api.medusapay.com.br/v1/transactions",
+      ];
 
-      const ct = res.headers.get("content-type") || "";
-      if (!ct.includes("application/json")) {
-        const text = await res.text();
-        console.error("MedusaPay non-JSON:", text.slice(0, 300));
-        return { error: `Resposta inválida (${res.status})` };
+      let json: any = null;
+      let lastError = "Falha ao gerar PIX. Tente novamente.";
+
+      for (const endpoint of endpoints) {
+        let res: Response;
+        try {
+          res = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              Authorization: `Basic ${auth}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          });
+        } catch (err: any) {
+          lastError = err?.message || lastError;
+          console.error("MedusaPay request failed:", endpoint, lastError);
+          continue;
+        }
+
+        const ct = res.headers.get("content-type") || "";
+        if (!ct.includes("application/json")) {
+          const text = await res.text();
+          console.error("MedusaPay non-JSON:", endpoint, text.slice(0, 300));
+          lastError = `Resposta inválida (${res.status})`;
+          if (res.status >= 500) continue;
+          return { error: lastError };
+        }
+
+        json = await res.json();
+        if (res.ok) break;
+
+        lastError = json?.message || json?.error || `Erro ${res.status}`;
+        console.error("MedusaPay error:", endpoint, JSON.stringify(json));
+
+        const shouldTryFallback =
+          res.status === 424 || res.status >= 500 || /ENOTFOUND|Fnt/i.test(lastError);
+        if (!shouldTryFallback) break;
       }
 
-      const json = await res.json();
-      if (!res.ok) {
-        console.error("MedusaPay error:", JSON.stringify(json));
-        return { error: json?.message || json?.error || `Erro ${res.status}` };
+      if (!json || json?.message || json?.error) {
+        const txid = `KP${Date.now().toString(36).toUpperCase()}`;
+        const manualPix = buildManualPix(data.amount, txid);
+        console.error("MedusaPay unavailable, generated manual PIX:", lastError);
+        return {
+          id: txid,
+          amount: data.amount,
+          pixQrCode: manualPix,
+          pixCopyPaste: manualPix,
+          isManual: true,
+        };
       }
 
       const { qr, copy } = pickQr(json);
@@ -93,6 +172,14 @@ export const createPixPayment = createServerFn({ method: "POST" })
       };
     } catch (err: any) {
       console.error("MedusaPay request failed:", err?.message);
-      return { error: "Falha ao gerar PIX. Tente novamente." };
+      const txid = `KP${Date.now().toString(36).toUpperCase()}`;
+      const manualPix = buildManualPix(data.amount, txid);
+      return {
+        id: txid,
+        amount: data.amount,
+        pixQrCode: manualPix,
+        pixCopyPaste: manualPix,
+        isManual: true,
+      };
     }
   });
