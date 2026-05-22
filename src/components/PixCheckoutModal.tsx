@@ -366,16 +366,15 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
           {step === "qr" && result && (
             <div className="space-y-4">
               <div className="rounded-2xl bg-white p-5 flex justify-center">
-                <QRCodeSVG value={result.pixCopyPaste!} size={220} />
+                {result.pixQrImage ? (
+                  <img src={result.pixQrImage} alt="QR Code PIX" className="h-[220px] w-[220px]" />
+                ) : (
+                  <QRCodeSVG value={result.pixCopyPaste!} size={220} />
+                )}
               </div>
               <p className="text-sm text-cream/80 text-center">
                 Abra o app do seu banco, escaneie o QR Code ou cole o código abaixo.
               </p>
-              {result.isManual && (
-                <div className="text-xs text-gold bg-gold/10 border border-gold/30 rounded-lg px-3 py-2 text-center">
-                  QR Code gerado no Pix direto. Envie o comprovante no WhatsApp após pagar.
-                </div>
-              )}
               <div className="bg-night rounded-xl p-3 border border-cream/10">
                 <div className="text-xs text-cream/50 uppercase tracking-wider mb-1">
                   Pix copia e cola

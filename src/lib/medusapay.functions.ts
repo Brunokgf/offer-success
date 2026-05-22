@@ -14,61 +14,38 @@ const PixInput = z.object({
 
 export type PixResult = {
   id?: string;
-  pixQrCode?: string;
+  pixQrImage?: string;
   pixCopyPaste?: string;
   amount?: number;
   expiresAt?: string;
-  isManual?: boolean;
   error?: string;
 };
 
-function pickQr(data: any): { qr?: string; copy?: string } {
+function pickQr(data: any): { image?: string; copy?: string } {
   const pix = data?.pix ?? data?.charges?.[0]?.lastTransaction?.pix ?? data?.lastTransaction?.pix ?? {};
-  const qr = pix.qrcode || pix.qr_code || pix.qrCode || data?.qr_code || data?.qrcode;
-  const copy = pix.qrcode || pix.copy_paste || pix.copyPaste || data?.copy_paste || qr;
-  return { qr, copy };
-}
-
-function emv(id: string, value: string) {
-  return `${id}${String(value.length).padStart(2, "0")}${value}`;
-}
-
-function crc16(payload: string) {
-  let crc = 0xffff;
-  for (let i = 0; i < payload.length; i++) {
-    crc ^= payload.charCodeAt(i) << 8;
-    for (let j = 0; j < 8; j++) {
-      crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1;
-      crc &= 0xffff;
-    }
-  }
-  return crc.toString(16).toUpperCase().padStart(4, "0");
-}
-
-function buildManualPix(amount: number, txid: string) {
-  const pixKey = process.env.PIX_KEY || "rubenscardosoaguiar@gmail.com";
-  const merchant = (process.env.PIX_MERCHANT_NAME || "RUBENS CARDOSO AGUIAR")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .slice(0, 25);
-  const city = (process.env.PIX_MERCHANT_CITY || "SAO PAULO")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .slice(0, 15);
-  const account = emv("00", "BR.GOV.BCB.PIX") + emv("01", pixKey);
-  const additional = emv("05", txid.replace(/[^A-Z0-9]/gi, "").slice(0, 25) || "PEDIDO");
-  const withoutCrc =
-    emv("00", "01") +
-    emv("26", account) +
-    emv("52", "0000") +
-    emv("53", "986") +
-    emv("54", amount.toFixed(2)) +
-    emv("58", "BR") +
-    emv("59", merchant) +
-    emv("60", city) +
-    emv("62", additional) +
-    "6304";
-  return `${withoutCrc}${crc16(withoutCrc)}`;
+  const imageCandidates = [pix.qrcode, pix.qr_code, pix.qrCode, data?.qr_code, data?.qrcode];
+  const copyCandidates = [
+    pix.qrcodeText,
+    pix.qrCodeText,
+    pix.copy_paste,
+    pix.copyPaste,
+    pix.emv,
+    pix.brcode,
+    data?.qrcodeText,
+    data?.qrCodeText,
+    data?.copy_paste,
+    data?.copyPaste,
+    data?.emv,
+    data?.brcode,
+    ...imageCandidates,
+  ];
+  const image = imageCandidates.find(
+    (value) => typeof value === "string" && value.startsWith("data:image"),
+  );
+  const copy = copyCandidates.find(
+    (value) => typeof value === "string" && value.length > 20 && !value.startsWith("data:image"),
+  );
+  return { image, copy };
 }
 
 export const createPixPayment = createServerFn({ method: "POST" })
@@ -76,14 +53,22 @@ export const createPixPayment = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<PixResult> => {
     const secretKey = process.env.MEDUSAPAY_SECRET_KEY;
     if (!secretKey) return { error: "MEDUSAPAY_SECRET_KEY não configurado" };
+    const publicKey = process.env.MEDUSAPAY_PUBLIC_KEY;
+    if (!publicKey) return { error: "MEDUSAPAY_PUBLIC_KEY não configurado" };
 
-    const auth = Buffer.from(`${secretKey}:x`).toString("base64");
+    const auth = Buffer.from(`${secretKey}:${publicKey}`).toString("base64");
     const cleanDoc = data.customer.document.replace(/\D/g, "");
     const cleanPhone = data.customer.phone.replace(/\D/g, "");
 
     const body = {
       paymentMethod: "pix",
+      ip: "127.0.0.1",
+      pix: {
+        expiresInDays: 1,
+      },
       amount: Math.round(data.amount * 100),
+      externalRef: `KP${Date.now().toString(36).toUpperCase()}`,
+      traceable: false,
       items: [
         {
           title: data.description,
@@ -149,37 +134,20 @@ export const createPixPayment = createServerFn({ method: "POST" })
         if (!shouldTryFallback) break;
       }
 
-      if (!json || json?.message || json?.error) {
-        const txid = `KP${Date.now().toString(36).toUpperCase()}`;
-        const manualPix = buildManualPix(data.amount, txid);
-        console.error("MedusaPay unavailable, generated manual PIX:", lastError);
-        return {
-          id: txid,
-          amount: data.amount,
-          pixQrCode: manualPix,
-          pixCopyPaste: manualPix,
-          isManual: true,
-        };
-      }
+      if (!json || json?.message || json?.error) return { error: lastError };
 
-      const { qr, copy } = pickQr(json);
+      const { image, copy } = pickQr(json);
+      if (!copy) return { error: "A MedusaPay não retornou um código PIX válido." };
+
       return {
         id: json?.id,
         amount: data.amount,
-        pixQrCode: qr,
+        pixQrImage: image,
         pixCopyPaste: copy,
         expiresAt: json?.pix?.expirationDate || json?.expiresAt,
       };
     } catch (err: any) {
       console.error("MedusaPay request failed:", err?.message);
-      const txid = `KP${Date.now().toString(36).toUpperCase()}`;
-      const manualPix = buildManualPix(data.amount, txid);
-      return {
-        id: txid,
-        amount: data.amount,
-        pixQrCode: manualPix,
-        pixCopyPaste: manualPix,
-        isManual: true,
-      };
+      return { error: "MedusaPay indisponível agora. Tente novamente em instantes." };
     }
   });
