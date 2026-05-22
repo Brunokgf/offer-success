@@ -87,52 +87,35 @@ export const createPixPayment = createServerFn({ method: "POST" })
     };
 
     try {
-      const endpoints = [
-        "https://api.v2.medusapay.com.br/v1/transactions",
-        "https://api.medusapay.com.br/v1/transactions",
-      ];
+      const endpoint = "https://api.v2.medusapay.com.br/v1/transactions";
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${auth}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
 
-      let json: any = null;
-      let lastError = "Falha ao gerar PIX. Tente novamente.";
+      const ct = res.headers.get("content-type") || "";
+      const json: any = ct.includes("application/json") ? await res.json() : null;
 
-      for (const endpoint of endpoints) {
-        let res: Response;
-        try {
-          res = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-              Authorization: `Basic ${auth}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
-          });
-        } catch (err: any) {
-          lastError = err?.message || lastError;
-          console.error("MedusaPay request failed:", endpoint, lastError);
-          continue;
+      if (!res.ok || !json) {
+        const raw = json?.message || json?.error || `Erro ${res.status}`;
+        console.error("MedusaPay error:", endpoint, raw);
+
+        // 424 ENOTFOUND/Fnt = acquirer PIX da MedusaPay fora do ar
+        if (res.status === 424 || /ENOTFOUND|Fnt/i.test(raw)) {
+          return {
+            error:
+              "MedusaPay está com instabilidade no PIX (acquirer fora do ar). Tente em alguns minutos ou finalize pelo WhatsApp.",
+          };
         }
-
-        const ct = res.headers.get("content-type") || "";
-        if (!ct.includes("application/json")) {
-          const text = await res.text();
-          console.error("MedusaPay non-JSON:", endpoint, text.slice(0, 300));
-          lastError = `Resposta inválida (${res.status})`;
-          if (res.status >= 500) continue;
-          return { error: lastError };
+        if (res.status === 401) {
+          return { error: "Chave MedusaPay inválida ou inativa. Verifique no painel." };
         }
-
-        json = await res.json();
-        if (res.ok) break;
-
-        lastError = json?.message || json?.error || `Erro ${res.status}`;
-        console.error("MedusaPay error:", endpoint, JSON.stringify(json));
-
-        const shouldTryFallback =
-          res.status === 424 || res.status >= 500 || /ENOTFOUND|Fnt/i.test(lastError);
-        if (!shouldTryFallback) break;
+        return { error: raw };
       }
-
-      if (!json || json?.message || json?.error) return { error: lastError };
 
       const { image, copy } = pickQr(json);
       if (!copy) return { error: "A MedusaPay não retornou um código PIX válido." };
