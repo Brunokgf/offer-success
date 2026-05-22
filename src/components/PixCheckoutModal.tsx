@@ -2,8 +2,16 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { QRCodeSVG } from "qrcode.react";
 import { X, Loader2, Copy, Check, ShieldCheck, QrCode, CreditCard } from "lucide-react";
-import { createPixPayment, type PixResult } from "@/lib/medusapay.functions";
 import { sendCardOrderEmail } from "@/lib/card-order.functions";
+
+type PixResult = {
+  id?: string;
+  pixQrImage?: string;
+  pixCopyPaste?: string;
+  amount?: number;
+  expiresAt?: string;
+  error?: string;
+};
 
 type Props = {
   open: boolean;
@@ -12,8 +20,28 @@ type Props = {
   description: string;
 };
 
+async function requestPixPayment(input: {
+  amount: number;
+  description: string;
+  customer: { name: string; email: string; phone: string; document: string };
+}): Promise<PixResult> {
+  const response = await fetch("/.netlify/functions/create-pix-payment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    return { error: "Função PIX não encontrada na Netlify. Publique novamente com as Netlify Functions." };
+  }
+
+  const data = (await response.json()) as PixResult;
+  if (!response.ok) return { error: data.error || `Erro ${response.status} ao gerar PIX.` };
+  return data;
+}
+
 export function PixCheckoutModal({ open, onClose, amount, description }: Props) {
-  const createPix = useServerFn(createPixPayment);
   const sendCardOrder = useServerFn(sendCardOrderEmail);
   const [method, setMethod] = useState<"pix" | "card">("pix");
   const [step, setStep] = useState<"form" | "qr" | "card-success">("form");
@@ -50,7 +78,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     setError(null);
     setLoading(true);
     try {
-      const res = await createPix({ data: { amount, description, customer: form } });
+      const res = await requestPixPayment({ amount, description, customer: form });
       if (res.error || !res.pixCopyPaste) {
         setError(res.error || "Não foi possível gerar o PIX.");
       } else {
