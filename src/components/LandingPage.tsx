@@ -50,14 +50,15 @@ function CountdownBar() {
   }, []);
   const pad = (n: number) => String(n).padStart(2, "0");
   return (
-    <div className="bg-night text-brand-foreground py-2.5 px-4 text-center text-sm font-medium">
-      <span className="inline-flex items-center gap-2 flex-wrap justify-center">
-        <Flame className="h-4 w-4 text-brand" />
+    <div className="bg-night text-brand-foreground py-2 px-3 text-center text-[11px] sm:text-sm font-medium">
+      <span className="inline-flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center leading-tight">
+        <Flame className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-brand shrink-0" />
         <span>Faltam</span>
         <span className="font-mono font-bold tracking-wider text-brand">
           {mounted ? `${t.d}d ${pad(t.h)}:${pad(t.m)}:${pad(t.s)}` : "—"}
         </span>
-        <span>para o Dia dos Namorados — últimas unidades do Kit Paixão</span>
+        <span className="hidden sm:inline">para o Dia dos Namorados — últimas unidades do Kit Paixão</span>
+        <span className="sm:hidden">p/ o Dia dos Namorados</span>
       </span>
     </div>
   );
@@ -66,32 +67,32 @@ function CountdownBar() {
 function Hero() {
   return (
     <section className="bg-night-stars text-brand-foreground relative overflow-hidden">
-      <div className="container mx-auto px-4 py-14 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <span className="inline-flex items-center gap-2 bg-brand/20 text-brand border border-brand/40 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-5">
+      <div className="container mx-auto px-4 py-10 sm:py-14 lg:py-24 grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+        <div className="order-2 lg:order-1">
+          <span className="inline-flex items-center gap-2 bg-brand/20 text-brand border border-brand/40 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-4 sm:mb-5">
             <Flame className="h-3.5 w-3.5" /> Edição Limitada · Dia dos Namorados
           </span>
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05] mb-5">
+          <h1 className="font-display text-[2rem] xs:text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.08] mb-4 sm:mb-5">
             Acenda a noite com o <span className="text-brand italic">Kit Paixão.</span>
           </h1>
-          <p className="text-lg text-brand-foreground/80 mb-7 leading-relaxed">
+          <p className="text-base sm:text-lg text-brand-foreground/80 mb-6 sm:mb-7 leading-relaxed">
             Tudo que ela sonha em receber — em uma única caixa. <strong className="text-brand-foreground">Joias, rosas, lingerie, vinho e o ursinho com mensagem</strong>. O presente que vai transformar a noite de vocês.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <a
               href="#oferta"
-              className="inline-flex items-center justify-center gap-2 bg-gradient-brand text-brand-foreground px-7 py-4 rounded-xl font-bold text-base shadow-warm hover:scale-[1.02] transition-transform"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-brand text-brand-foreground px-6 sm:px-7 py-4 rounded-xl font-bold text-sm sm:text-base shadow-warm hover:scale-[1.02] transition-transform text-center"
             >
               QUERO MEU KIT PAIXÃO
             </a>
             <a
               href="#como-funciona"
-              className="inline-flex items-center justify-center gap-2 border border-brand-foreground/30 px-7 py-4 rounded-xl font-semibold text-brand-foreground hover:bg-brand-foreground/10 transition-colors"
+              className="inline-flex items-center justify-center gap-2 border border-brand-foreground/30 px-6 sm:px-7 py-4 rounded-xl font-semibold text-sm sm:text-base text-brand-foreground hover:bg-brand-foreground/10 transition-colors text-center"
             >
               O que vem dentro?
             </a>
           </div>
-          <div className="flex items-center gap-4 text-sm text-brand-foreground/70">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-brand-foreground/70 flex-wrap">
             <div className="flex">
               {[1, 2, 3, 4, 5].map((i) => (
                 <Star key={i} className="h-4 w-4 fill-brand text-brand" />
@@ -100,19 +101,19 @@ function Hero() {
             <span><strong className="text-brand-foreground">4.9/5</strong> · 12.480 casais incendiados</span>
           </div>
         </div>
-        <div className="relative flex items-center justify-center">
+        <div className="relative flex items-center justify-center order-1 lg:order-2 px-2 sm:px-0">
           <div className="absolute inset-0 bg-brand/30 blur-3xl rounded-full" />
           <img
             src={kit}
             alt="Kit Paixão Dia dos Namorados — joias, rosas, lingerie e vinho"
             width={1024}
             height={1024}
-            className="relative max-w-md w-full rounded-3xl shadow-warm"
+            className="relative max-w-xs sm:max-w-md w-full rounded-3xl shadow-warm"
           />
-          <div className="absolute -bottom-2 right-0 sm:right-4 bg-card text-foreground shadow-card rounded-2xl px-4 py-3 flex items-center gap-3 border border-border">
-            <Gift className="h-8 w-8 text-brand" />
+          <div className="absolute -bottom-2 right-2 sm:right-4 bg-card text-foreground shadow-card rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3 border border-border">
+            <Gift className="h-6 w-6 sm:h-8 sm:w-8 text-brand" />
             <div>
-              <div className="font-bold text-sm leading-tight">Caixa surpresa</div>
+              <div className="font-bold text-xs sm:text-sm leading-tight">Caixa surpresa</div>
               <div className="text-xs text-muted-foreground">embalada e lacrada</div>
             </div>
           </div>
