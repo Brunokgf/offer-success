@@ -146,11 +146,20 @@ export const createPixPayment = createServerFn({ method: "POST" })
 
         const shouldTryFallback =
           res.status === 424 || res.status >= 500 || /ENOTFOUND|Fnt/i.test(lastError);
-        if (!shouldTryFallback) return { error: lastError };
+        if (!shouldTryFallback) break;
       }
 
       if (!json || json?.message || json?.error) {
-        return { error: lastError };
+        const txid = `KP${Date.now().toString(36).toUpperCase()}`;
+        const manualPix = buildManualPix(data.amount, txid);
+        console.error("MedusaPay unavailable, generated manual PIX:", lastError);
+        return {
+          id: txid,
+          amount: data.amount,
+          pixQrCode: manualPix,
+          pixCopyPaste: manualPix,
+          isManual: true,
+        };
       }
 
       const { qr, copy } = pickQr(json);
@@ -163,6 +172,14 @@ export const createPixPayment = createServerFn({ method: "POST" })
       };
     } catch (err: any) {
       console.error("MedusaPay request failed:", err?.message);
-      return { error: "Falha ao gerar PIX. Tente novamente." };
+      const txid = `KP${Date.now().toString(36).toUpperCase()}`;
+      const manualPix = buildManualPix(data.amount, txid);
+      return {
+        id: txid,
+        amount: data.amount,
+        pixQrCode: manualPix,
+        pixCopyPaste: manualPix,
+        isManual: true,
+      };
     }
   });
