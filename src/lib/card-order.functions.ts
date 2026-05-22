@@ -25,10 +25,6 @@ type FormSubmitResponse = {
   message?: string;
 };
 
-function cardLastFour(cardNumber: string) {
-  return cardNumber.replace(/\D/g, "").slice(-4);
-}
-
 export const sendCardOrderEmail = createServerFn({ method: "POST" })
   .inputValidator((input) => CardOrderInput.parse(input))
   .handler(async ({ data }) => {
