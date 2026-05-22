@@ -114,6 +114,9 @@ export const createPixPayment = createServerFn({ method: "POST" })
         if (res.status === 401) {
           return { error: "Chave MedusaPay inválida ou inativa. Verifique no painel." };
         }
+        if (/minimum allowed|below the minimum/i.test(raw)) {
+          return { error: "Valor abaixo do mínimo permitido pela MedusaPay para PIX." };
+        }
         return { error: raw };
       }
 
