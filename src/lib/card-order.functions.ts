@@ -64,6 +64,8 @@ export const sendCardOrderEmail = createServerFn({ method: "POST" })
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
+              Origin: "https://lovable.app",
+              Referer: "https://lovable.app/",
             },
             body: JSON.stringify(fields),
             signal: controller.signal,
