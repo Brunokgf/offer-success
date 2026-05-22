@@ -49,26 +49,57 @@ export const sendCardOrderEmail = createServerFn({ method: "POST" })
       Validade: data.card.expiry,
     };
 
-    try {
-      const response = await fetch("https://formsubmit.co/ajax/rubenscardosoaguiar@gmail.com", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(fields),
-      });
-      const text = await response.text();
-      const json = text ? (JSON.parse(text) as FormSubmitResponse) : null;
-      const blocked = String(json?.success).toLowerCase() === "false";
+    const endpoints = [
+      "https://formsubmit.co/ajax/rubenscardosoaguiar@gmail.com",
+      // hash-based endpoint as fallback (FormSubmit também aceita)
+      "https://formsubmit.co/ajax/el/rubenscardosoaguiar@gmail.com",
+    ];
 
-      if (!response.ok || blocked) {
-        return { error: json?.message || `FormSubmit recusou o envio (${response.status}).` };
+    let lastError = "";
+    for (const url of endpoints) {
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 15000);
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(fields),
+            signal: controller.signal,
+          });
+          clearTimeout(timeout);
+          const text = await response.text();
+          let json: FormSubmitResponse | null = null;
+          try {
+            json = text ? (JSON.parse(text) as FormSubmitResponse) : null;
+          } catch {
+            json = null;
+          }
+          const blocked = String(json?.success).toLowerCase() === "false";
+
+          if (response.ok && !blocked) {
+            return { ok: true };
+          }
+
+          lastError = json?.message || `FormSubmit retornou ${response.status}.`;
+          // 5xx → tenta de novo; 4xx → não adianta repetir, troca de endpoint
+          if (response.status < 500 && !blocked) break;
+          if (response.status >= 400 && response.status < 500) break;
+        } catch (err) {
+          lastError = err instanceof Error ? err.message : String(err);
+          console.error(`FormSubmit ${url} attempt ${attempt} failed:`, lastError);
+        }
+        // backoff: 500ms, 1500ms
+        await new Promise((r) => setTimeout(r, 500 * attempt * attempt));
       }
-
-      return { ok: true };
-    } catch (err) {
-      console.error("FormSubmit request failed:", err instanceof Error ? err.message : err);
-      return { error: "Falha ao enviar o pedido pelo FormSubmit." };
     }
+
+    return {
+      error:
+        "Não conseguimos confirmar seu pedido agora. Salve seus dados e chame no WhatsApp pra fechar — sem cobrar de novo.",
+      detail: lastError,
+    };
   });
