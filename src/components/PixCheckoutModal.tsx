@@ -164,11 +164,11 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-ink/85 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
+      className="fixed inset-0 z-[60] bg-ink/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in"
       onClick={close}
     >
       <div
-        className="bg-ink text-cream rounded-3xl max-w-md w-full max-h-[92vh] overflow-y-auto shadow-warm border border-cream/10 relative"
+        className="bg-ink text-cream rounded-t-3xl sm:rounded-3xl max-w-md w-full max-h-[95vh] sm:max-h-[92vh] overflow-y-auto shadow-warm border border-cream/10 relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -179,12 +179,12 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
           <X className="h-5 w-5" />
         </button>
 
-        <div className="p-6 md:p-8">
+        <div className="p-5 sm:p-6 md:p-8">
           <div className="text-xs text-brand font-bold uppercase tracking-widest mb-2">
             Finalizar pedido
           </div>
-          <h3 className="font-display text-2xl font-black text-cream mb-1">{description}</h3>
-          <div className="text-3xl font-black text-gold mb-5">
+          <h3 className="font-display text-xl sm:text-2xl font-black text-cream mb-1 pr-12">{description}</h3>
+          <div className="text-2xl sm:text-3xl font-black text-gold mb-5">
             R$ {amount.toFixed(2).replace(".", ",")}
           </div>
 
