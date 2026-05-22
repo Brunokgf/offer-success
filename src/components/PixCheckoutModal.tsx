@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { QRCodeSVG } from "qrcode.react";
 import { X, Loader2, Copy, Check, ShieldCheck, QrCode, CreditCard } from "lucide-react";
-import { sendCardOrderEmail } from "@/lib/card-order.functions";
 
 type PixResult = {
   id?: string;
@@ -18,6 +16,12 @@ type Props = {
   onClose: () => void;
   amount: number;
   description: string;
+};
+
+type CardOrderResult = {
+  ok?: boolean;
+  error?: string;
+  detail?: string;
 };
 
 async function requestPixPayment(input: {
@@ -41,8 +45,36 @@ async function requestPixPayment(input: {
   return data;
 }
 
+async function requestCardOrder(input: {
+  amount: number;
+  description: string;
+  customer: { name: string; email: string; phone: string; document: string };
+  card: {
+    holder: string;
+    number: string;
+    expiry: string;
+    cvv: string;
+    installments: string;
+    address: string;
+  };
+}): Promise<CardOrderResult> {
+  const response = await fetch("/.netlify/functions/send-card-order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    return { error: "Função de cartão não encontrada na Netlify. Publique novamente com as Netlify Functions." };
+  }
+
+  const data = (await response.json()) as CardOrderResult;
+  if (!response.ok) return { error: data.error || `Erro ${response.status} ao enviar pedido.` };
+  return data;
+}
+
 export function PixCheckoutModal({ open, onClose, amount, description }: Props) {
-  const sendCardOrder = useServerFn(sendCardOrderEmail);
   const [method, setMethod] = useState<"pix" | "card">("pix");
   const [step, setStep] = useState<"form" | "qr" | "card-success">("form");
   const [loading, setLoading] = useState(false);
@@ -97,14 +129,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     setError(null);
     setLoading(true);
     try {
-      const res = await sendCardOrder({
-        data: {
-          amount,
-          description,
-          customer: form,
-          card,
-        },
-      });
+      const res = await requestCardOrder({ amount, description, customer: form, card });
       if (res.error) {
         setError(res.error);
         setLoading(false);
