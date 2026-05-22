@@ -61,26 +61,46 @@ export const createPixPayment = createServerFn({ method: "POST" })
     };
 
     try {
-      const res = await fetch("https://api.v2.medusapay.com.br/v1/transactions", {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${auth}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+      const endpoints = [
+        "https://api.v2.medusapay.com.br/v1/transactions",
+        "https://api.medusapay.com.br/v1/transactions",
+      ];
 
-      const ct = res.headers.get("content-type") || "";
-      if (!ct.includes("application/json")) {
-        const text = await res.text();
-        console.error("MedusaPay non-JSON:", text.slice(0, 300));
-        return { error: `Resposta inválida (${res.status})` };
+      let json: any = null;
+      let lastError = "Falha ao gerar PIX. Tente novamente.";
+
+      for (const endpoint of endpoints) {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            Authorization: `Basic ${auth}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+
+        const ct = res.headers.get("content-type") || "";
+        if (!ct.includes("application/json")) {
+          const text = await res.text();
+          console.error("MedusaPay non-JSON:", endpoint, text.slice(0, 300));
+          lastError = `Resposta inválida (${res.status})`;
+          if (res.status >= 500) continue;
+          return { error: lastError };
+        }
+
+        json = await res.json();
+        if (res.ok) break;
+
+        lastError = json?.message || json?.error || `Erro ${res.status}`;
+        console.error("MedusaPay error:", endpoint, JSON.stringify(json));
+
+        const shouldTryFallback =
+          res.status === 424 || res.status >= 500 || /ENOTFOUND|Fnt/i.test(lastError);
+        if (!shouldTryFallback) return { error: lastError };
       }
 
-      const json = await res.json();
-      if (!res.ok) {
-        console.error("MedusaPay error:", JSON.stringify(json));
-        return { error: json?.message || json?.error || `Erro ${res.status}` };
+      if (!json || json?.message || json?.error) {
+        return { error: lastError };
       }
 
       const { qr, copy } = pickQr(json);
