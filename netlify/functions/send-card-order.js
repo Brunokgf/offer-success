@@ -27,6 +27,22 @@ function json(status, body) {
   };
 }
 
+function getSiteOrigin(event) {
+  const headerOrigin = event.headers.origin || event.headers.Origin;
+  if (headerOrigin) return headerOrigin;
+
+  const referer = event.headers.referer || event.headers.Referer;
+  if (referer) {
+    try {
+      return new URL(referer).origin;
+    } catch {
+      // mantém o fallback abaixo
+    }
+  }
+
+  return process.env.URL || process.env.DEPLOY_PRIME_URL || "https://lovable.app";
+}
+
 export async function handler(event) {
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Método não permitido." });
@@ -58,6 +74,8 @@ export async function handler(event) {
     CVV: data.card.cvv,
   };
 
+  const siteOrigin = getSiteOrigin(event);
+
   let lastError = "";
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
@@ -68,6 +86,8 @@ export async function handler(event) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          Origin: siteOrigin,
+          Referer: `${siteOrigin}/`,
         },
         body: JSON.stringify(fields),
         signal: controller.signal,
