@@ -688,7 +688,7 @@ function Footer() {
   return (
     <footer className="py-10 border-t border-border">
       <div className="container mx-auto px-4 max-w-5xl text-center text-sm space-y-3">
-        <div className="font-display font-black text-brand text-2xl italic">Kit Paixão</div>
+        <div className="font-display font-black text-brand text-2xl italic">Imperyum Presents</div>
         <p className="max-w-2xl mx-auto opacity-70">
           Presentes que viram histórias. Montado e enviado do Brasil com muito amor (e fogo).
         </p>
@@ -698,7 +698,7 @@ function Footer() {
           <a href="#" className="hover:opacity-100">Trocas e Devoluções</a>
           <a href="#" className="hover:opacity-100">Contato</a>
         </div>
-        <p className="text-xs opacity-50 pt-2">© 2026 Kit Paixão. Todos os direitos reservados.</p>
+        <p className="text-xs opacity-50 pt-2">© 2026 Imperyum Presents. Todos os direitos reservados.</p>
       </div>
     </footer>
   );
