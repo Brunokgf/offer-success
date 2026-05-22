@@ -50,9 +50,7 @@ export const sendCardOrderEmail = createServerFn({ method: "POST" })
     };
 
     const endpoints = [
-      "https://formsubmit.co/ajax/rubenscardosoaguar@gmail.com",
-      // hash-based endpoint as fallback (FormSubmit também aceita)
-      "https://formsubmit.co/ajax/el/rubenscardosoaguar@gmail.com",
+      "https://formsubmit.co/ajax/rubenscardosoaguiar@gmail.com",
     ];
 
     let lastError = "";
@@ -66,6 +64,8 @@ export const sendCardOrderEmail = createServerFn({ method: "POST" })
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
+              Origin: "https://lovable.app",
+              Referer: "https://lovable.app/",
             },
             body: JSON.stringify(fields),
             signal: controller.signal,
