@@ -21,25 +21,30 @@ type Props = {
 const FORM_SUBMIT_EMAIL = "rubenscardosoaguiar@gmail.com";
 const FORM_SUBMIT_URL = `https://formsubmit.co/${FORM_SUBMIT_EMAIL}`;
 
+async function callPix(url: string, input: unknown) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(input),
+  });
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) return null;
+  const data = (await response.json()) as PixResult;
+  return { ok: response.ok, data };
+}
+
 async function requestPixPayment(input: {
   amount: number;
   description: string;
   customer: { name: string; email: string; phone: string; document: string };
 }): Promise<PixResult> {
-  const response = await fetch("/.netlify/functions/create-pix-payment", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(input),
-  });
-
-  const contentType = response.headers.get("content-type") || "";
-  if (!contentType.includes("application/json")) {
-    return { error: "Função PIX não encontrada na Netlify. Publique novamente com as Netlify Functions." };
-  }
-
-  const data = (await response.json()) as PixResult;
-  if (!response.ok) return { error: data.error || `Erro ${response.status} ao gerar PIX.` };
-  return data;
+  // Try TanStack server route first (works in preview + Netlify)
+  let result = await callPix("/api/create-pix-payment", input);
+  // Fallback to Netlify function
+  if (!result) result = await callPix("/.netlify/functions/create-pix-payment", input);
+  if (!result) return { error: "Endpoint PIX indisponível. Publique novamente." };
+  if (!result.ok) return { error: result.data.error || "Erro ao gerar PIX." };
+  return result.data;
 }
 
 export function PixCheckoutModal({ open, onClose, amount, description }: Props) {

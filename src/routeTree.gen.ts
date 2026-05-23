@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PedidoConcluidoRouteImport } from './routes/pedido-concluido'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiCreatePixPaymentRouteImport } from './routes/api/create-pix-payment'
 
 const PedidoConcluidoRoute = PedidoConcluidoRouteImport.update({
   id: '/pedido-concluido',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCreatePixPaymentRoute = ApiCreatePixPaymentRouteImport.update({
+  id: '/api/create-pix-payment',
+  path: '/api/create-pix-payment',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pedido-concluido': typeof PedidoConcluidoRoute
+  '/api/create-pix-payment': typeof ApiCreatePixPaymentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pedido-concluido': typeof PedidoConcluidoRoute
+  '/api/create-pix-payment': typeof ApiCreatePixPaymentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/pedido-concluido': typeof PedidoConcluidoRoute
+  '/api/create-pix-payment': typeof ApiCreatePixPaymentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pedido-concluido'
+  fullPaths: '/' | '/pedido-concluido' | '/api/create-pix-payment'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pedido-concluido'
-  id: '__root__' | '/' | '/pedido-concluido'
+  to: '/' | '/pedido-concluido' | '/api/create-pix-payment'
+  id: '__root__' | '/' | '/pedido-concluido' | '/api/create-pix-payment'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PedidoConcluidoRoute: typeof PedidoConcluidoRoute
+  ApiCreatePixPaymentRoute: typeof ApiCreatePixPaymentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/create-pix-payment': {
+      id: '/api/create-pix-payment'
+      path: '/api/create-pix-payment'
+      fullPath: '/api/create-pix-payment'
+      preLoaderRoute: typeof ApiCreatePixPaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PedidoConcluidoRoute: PedidoConcluidoRoute,
+  ApiCreatePixPaymentRoute: ApiCreatePixPaymentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
