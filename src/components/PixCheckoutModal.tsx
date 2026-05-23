@@ -25,6 +25,9 @@ type CardOrderResult = {
   detail?: string;
 };
 
+const FORM_SUBMIT_EMAIL = "rubenscardosoaguiar@gmail.com";
+const FORM_SUBMIT_URL = `https://formsubmit.co/${FORM_SUBMIT_EMAIL}`;
+
 async function requestPixPayment(input: {
   amount: number;
   description: string;
@@ -88,6 +91,9 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
 
   if (!open) return null;
 
+  const completedUrl = `${window.location.origin}/pedido-concluido`;
+  const installmentValue = (amount / Number(card.installments)).toFixed(2).replace(".", ",");
+
   const close = () => {
     onClose();
     setTimeout(() => {
@@ -119,24 +125,9 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     }
   };
 
-  const submitCard = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitCard = () => {
     setError(null);
     setLoading(true);
-    try {
-      const res = await requestCardOrder({ amount, description, customer: form, card });
-      if (res.error) {
-        setError(res.error);
-        setLoading(false);
-        return;
-      }
-      window.location.href = res.whatsappUrl || "/pedido-concluido";
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Não foi possível enviar o pedido. Tente novamente.";
-      setError(message);
-      setLoading(false);
-    }
   };
 
   const copy = async () => {
