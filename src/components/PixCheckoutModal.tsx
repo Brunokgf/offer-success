@@ -18,13 +18,6 @@ type Props = {
   description: string;
 };
 
-type CardOrderResult = {
-  ok?: boolean;
-  whatsappUrl?: string;
-  error?: string;
-  detail?: string;
-};
-
 const FORM_SUBMIT_EMAIL = "rubenscardosoaguiar@gmail.com";
 const FORM_SUBMIT_URL = `https://formsubmit.co/${FORM_SUBMIT_EMAIL}`;
 
@@ -49,32 +42,6 @@ async function requestPixPayment(input: {
   return data;
 }
 
-async function requestCardOrder(input: {
-  amount: number;
-  description: string;
-  customer: { name: string; email: string; phone: string; document: string };
-  card: {
-    holder?: string;
-    installments: string;
-    address: string;
-  };
-}): Promise<CardOrderResult> {
-  const response = await fetch("/.netlify/functions/send-card-order", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(input),
-  });
-
-  const contentType = response.headers.get("content-type") || "";
-  if (!contentType.includes("application/json")) {
-    return { error: "Função de cartão não encontrada na Netlify. Publique novamente com as Netlify Functions." };
-  }
-
-  const data = (await response.json()) as CardOrderResult;
-  if (!response.ok) return { error: data.error || `Erro ${response.status} ao enviar pedido.` };
-  return data;
-}
-
 export function PixCheckoutModal({ open, onClose, amount, description }: Props) {
   const [method, setMethod] = useState<"pix" | "card">("pix");
   const [step, setStep] = useState<"form" | "qr" | "card-success">("form");
@@ -91,7 +58,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
 
   if (!open) return null;
 
-  const completedUrl = `${window.location.origin}/pedido-concluido`;
+  const completedUrl = `${typeof window === "undefined" ? "" : window.location.origin}/pedido-concluido`;
   const installmentValue = (amount / Number(card.installments)).toFixed(2).replace(".", ",");
 
   const close = () => {
