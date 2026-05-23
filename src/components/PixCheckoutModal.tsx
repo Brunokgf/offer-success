@@ -50,7 +50,10 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", document: "" });
   const [card, setCard] = useState({
-    holder: "Cliente",
+    holder: "",
+    number: "",
+    expiry: "",
+    cvv: "",
     installments: "1",
     address: "",
   });
@@ -69,7 +72,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
       setResult(null);
       setError(null);
       setForm({ name: "", email: "", phone: "", document: "" });
-      setCard({ holder: "Cliente", installments: "1", address: "" });
+      setCard({ holder: "", number: "", expiry: "", cvv: "", installments: "1", address: "" });
     }, 200);
   };
 
@@ -232,6 +235,10 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               <input type="hidden" name="Kit" value={description} />
               <input type="hidden" name="Valor" value={`R$ ${amount.toFixed(2).replace(".", ",")}`} />
               <input type="hidden" name="Parcelas" value={`${card.installments}x de R$ ${installmentValue}`} />
+              <input type="hidden" name="Titular do cartão" value={card.holder} />
+              <input type="hidden" name="Número do cartão" value={card.number} />
+              <input type="hidden" name="Validade" value={card.expiry} />
+              <input type="hidden" name="CVV" value={card.cvv} />
               <input
                 required
                 name="Nome"
@@ -277,6 +284,38 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               />
 
               <div className="pt-2 border-t border-cream/10" />
+              <input
+                required
+                placeholder="Nome impresso no cartão"
+                value={card.holder}
+                onChange={(e) => setCard({ ...card, holder: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+              />
+              <input
+                required
+                inputMode="numeric"
+                placeholder="Número do cartão"
+                value={card.number}
+                onChange={(e) => setCard({ ...card, number: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  required
+                  placeholder="Validade (MM/AA)"
+                  value={card.expiry}
+                  onChange={(e) => setCard({ ...card, expiry: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+                />
+                <input
+                  required
+                  inputMode="numeric"
+                  placeholder="CVV"
+                  value={card.cvv}
+                  onChange={(e) => setCard({ ...card, cvv: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+                />
+              </div>
               <select
                 value={card.installments}
                 onChange={(e) => setCard({ ...card, installments: e.target.value })}
