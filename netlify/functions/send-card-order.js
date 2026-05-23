@@ -126,7 +126,7 @@ export async function handler(event) {
         const result = await sendToFormSubmit(endpoint.url, fields, endpoint.asJson);
         if (result.ok) return json(200, { ok: true });
         lastError = result.error;
-        if (!result.retryable) break;
+        if (!result.retryable && !endpoint.asJson) break;
       } catch (error) {
         lastError = error instanceof Error ? error.message : String(error);
         console.error(`FormSubmit attempt ${attempt} failed:`, lastError);
