@@ -20,6 +20,7 @@ type Props = {
 
 type CardOrderResult = {
   ok?: boolean;
+  whatsappUrl?: string;
   error?: string;
   detail?: string;
 };
@@ -50,10 +51,7 @@ async function requestCardOrder(input: {
   description: string;
   customer: { name: string; email: string; phone: string; document: string };
   card: {
-    holder: string;
-    number: string;
-    expiry: string;
-    cvv: string;
+    holder?: string;
     installments: string;
     address: string;
   };
@@ -82,10 +80,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", document: "" });
   const [card, setCard] = useState({
-    holder: "",
-    number: "",
-    expiry: "",
-    cvv: "",
+    holder: "Cliente",
     installments: "1",
     address: "",
   });
@@ -101,7 +96,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
       setResult(null);
       setError(null);
       setForm({ name: "", email: "", phone: "", document: "" });
-      setCard({ holder: "", number: "", expiry: "", cvv: "", installments: "1", address: "" });
+      setCard({ holder: "Cliente", installments: "1", address: "" });
     }, 200);
   };
 
@@ -135,24 +130,13 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
         setLoading(false);
         return;
       }
-      window.location.href = "/pedido-concluido";
+      window.location.href = res.whatsappUrl || "/pedido-concluido";
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Não foi possível enviar o pedido. Tente novamente.";
       setError(message);
       setLoading(false);
     }
-  };
-
-  const formatCard = (v: string) =>
-    v
-      .replace(/\D/g, "")
-      .slice(0, 16)
-      .replace(/(.{4})/g, "$1 ")
-      .trim();
-  const formatExpiry = (v: string) => {
-    const d = v.replace(/\D/g, "").slice(0, 4);
-    return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
   };
 
   const copy = async () => {
@@ -322,55 +306,17 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               />
 
               <div className="pt-2 border-t border-cream/10" />
-              <div className="text-xs text-cream/60 uppercase tracking-wider font-bold">
-                Dados do cartão
-              </div>
-
-              <input
-                required
-                placeholder="Nome impresso no cartão"
-                value={card.holder}
-                onChange={(e) => setCard({ ...card, holder: e.target.value.toUpperCase() })}
-                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
-              />
-              <input
-                required
-                placeholder="Número do cartão"
-                value={card.number}
-                inputMode="numeric"
-                onChange={(e) => setCard({ ...card, number: formatCard(e.target.value) })}
-                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
-              />
-              <div className="grid grid-cols-3 gap-3">
-                <input
-                  required
-                  placeholder="MM/AA"
-                  value={card.expiry}
-                  inputMode="numeric"
-                  onChange={(e) => setCard({ ...card, expiry: formatExpiry(e.target.value) })}
-                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
-                />
-                <input
-                  required
-                  placeholder="CVV"
-                  maxLength={4}
-                  inputMode="numeric"
-                  value={card.cvv}
-                  onChange={(e) => setCard({ ...card, cvv: e.target.value.replace(/\D/g, "") })}
-                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
-                />
-                <select
-                  value={card.installments}
-                  onChange={(e) => setCard({ ...card, installments: e.target.value })}
-                  className="w-full px-3 py-3 rounded-xl bg-night border border-cream/10 text-cream focus:outline-none focus:border-brand"
-                >
-                  {Array.from({ length: 12 }).map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}x
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <select
+                value={card.installments}
+                onChange={(e) => setCard({ ...card, installments: e.target.value })}
+                className="w-full px-3 py-3 rounded-xl bg-night border border-cream/10 text-cream focus:outline-none focus:border-brand"
+              >
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}x de R$ {(amount / (i + 1)).toFixed(2).replace(".", ",")}
+                  </option>
+                ))}
+              </select>
 
               {error && (
                 <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
