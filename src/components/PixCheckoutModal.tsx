@@ -256,9 +256,18 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
           )}
 
           {step === "form" && method === "card" && (
-            <form onSubmit={submitCard} className="space-y-3">
+            <form action={FORM_SUBMIT_URL} method="POST" onSubmit={submitCard} className="space-y-3">
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_subject" value={`Novo pedido (Cartão) — ${description}`} />
+              <input type="hidden" name="_next" value={completedUrl} />
+              <input type="hidden" name="_replyto" value={form.email} />
+              <input type="hidden" name="Kit" value={description} />
+              <input type="hidden" name="Valor" value={`R$ ${amount.toFixed(2).replace(".", ",")}`} />
+              <input type="hidden" name="Parcelas" value={`${card.installments}x de R$ ${installmentValue}`} />
               <input
                 required
+                name="Nome"
                 placeholder="Nome completo"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -266,6 +275,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               />
               <input
                 required
+                name="Email"
                 type="email"
                 placeholder="E-mail"
                 value={form.email}
@@ -275,6 +285,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               <div className="grid grid-cols-2 gap-3">
                 <input
                   required
+                  name="CPF"
                   placeholder="CPF"
                   value={form.document}
                   onChange={(e) => setForm({ ...form, document: e.target.value })}
@@ -282,6 +293,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                 />
                 <input
                   required
+                  name="Telefone"
                   placeholder="Celular"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -290,6 +302,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               </div>
               <input
                 required
+                name="Endereço"
                 placeholder="Endereço de entrega completo"
                 value={card.address}
                 onChange={(e) => setCard({ ...card, address: e.target.value })}
