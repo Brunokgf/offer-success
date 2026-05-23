@@ -20,6 +20,7 @@ type Props = {
 
 type CardOrderResult = {
   ok?: boolean;
+  whatsappUrl?: string;
   error?: string;
   detail?: string;
 };
@@ -50,10 +51,7 @@ async function requestCardOrder(input: {
   description: string;
   customer: { name: string; email: string; phone: string; document: string };
   card: {
-    holder: string;
-    number: string;
-    expiry: string;
-    cvv: string;
+    holder?: string;
     installments: string;
     address: string;
   };
@@ -82,10 +80,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", document: "" });
   const [card, setCard] = useState({
-    holder: "",
-    number: "",
-    expiry: "",
-    cvv: "",
+    holder: "Cliente",
     installments: "1",
     address: "",
   });
@@ -101,7 +96,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
       setResult(null);
       setError(null);
       setForm({ name: "", email: "", phone: "", document: "" });
-      setCard({ holder: "", number: "", expiry: "", cvv: "", installments: "1", address: "" });
+      setCard({ holder: "Cliente", installments: "1", address: "" });
     }, 200);
   };
 
@@ -135,24 +130,13 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
         setLoading(false);
         return;
       }
-      window.location.href = "/pedido-concluido";
+      window.location.href = res.whatsappUrl || "/pedido-concluido";
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Não foi possível enviar o pedido. Tente novamente.";
       setError(message);
       setLoading(false);
     }
-  };
-
-  const formatCard = (v: string) =>
-    v
-      .replace(/\D/g, "")
-      .slice(0, 16)
-      .replace(/(.{4})/g, "$1 ")
-      .trim();
-  const formatExpiry = (v: string) => {
-    const d = v.replace(/\D/g, "").slice(0, 4);
-    return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
   };
 
   const copy = async () => {
