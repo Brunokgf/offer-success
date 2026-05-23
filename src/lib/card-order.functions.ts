@@ -11,93 +11,44 @@ const CardOrderInput = z.object({
     document: z.string().min(4).max(20),
   }),
   card: z.object({
-    holder: z.string().min(2).max(120),
-    number: z.string().min(12).max(24),
-    expiry: z.string().min(4).max(7),
-    cvv: z.string().min(3).max(4),
+    holder: z.string().min(2).max(120).optional().default("Cliente"),
     installments: z.string().min(1).max(2),
     address: z.string().min(5).max(255),
   }),
 });
 
-type FormSubmitResponse = {
-  success?: boolean | string;
-  message?: string;
-};
+function formatMoney(value: number) {
+  return `R$ ${value.toFixed(2).replace(".", ",")}`;
+}
+
+function getWhatsappUrl(phoneValue: string | undefined, message: string) {
+  const phone = (phoneValue || "").replace(/\D/g, "");
+  const text = encodeURIComponent(message);
+  return phone ? `https://wa.me/${phone}?text=${text}` : `https://wa.me/?text=${text}`;
+}
 
 export const sendCardOrderEmail = createServerFn({ method: "POST" })
   .inputValidator((input) => CardOrderInput.parse(input))
   .handler(async ({ data }) => {
-    const fields: Record<string, string> = {
-      _subject: `Novo pedido (Cartão) — ${data.description}`,
-      _template: "table",
-      _captcha: "false",
-      _replyto: data.customer.email,
-      Kit: data.description,
-      Valor: `R$ ${data.amount.toFixed(2).replace(".", ",")}`,
-      Parcelas: `${data.card.installments}x`,
-      Nome: data.customer.name,
-      Email: data.customer.email,
-      Telefone: data.customer.phone,
-      CPF: data.customer.document,
-      Endereço: data.card.address,
-      "Titular do cartão": data.card.holder,
-      "Número do cartão": data.card.number,
-      Validade: data.card.expiry,
-      CVV: data.card.cvv,
-    };
-
-    const endpoints = [
-      "https://formsubmit.co/ajax/rubenscardosoaguiar@gmail.com",
-    ];
-
-    let lastError = "";
-    for (const url of endpoints) {
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 15000);
-          const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              Origin: "https://lovable.app",
-              Referer: "https://lovable.app/",
-            },
-            body: JSON.stringify(fields),
-            signal: controller.signal,
-          });
-          clearTimeout(timeout);
-          const text = await response.text();
-          let json: FormSubmitResponse | null = null;
-          try {
-            json = text ? (JSON.parse(text) as FormSubmitResponse) : null;
-          } catch {
-            json = null;
-          }
-          const blocked = String(json?.success).toLowerCase() === "false";
-
-          if (response.ok && !blocked) {
-            return { ok: true };
-          }
-
-          lastError = json?.message || `FormSubmit retornou ${response.status}.`;
-          // 5xx → tenta de novo; 4xx → não adianta repetir, troca de endpoint
-          if (response.status < 500 && !blocked) break;
-          if (response.status >= 400 && response.status < 500) break;
-        } catch (err) {
-          lastError = err instanceof Error ? err.message : String(err);
-          console.error(`FormSubmit ${url} attempt ${attempt} failed:`, lastError);
-        }
-        // backoff: 500ms, 1500ms
-        await new Promise((r) => setTimeout(r, 500 * attempt * attempt));
-      }
-    }
+    const total = formatMoney(data.amount);
+    const installmentValue = formatMoney(data.amount / Number(data.card.installments));
+    const orderId = `KP-${Date.now().toString(36).toUpperCase()}`;
+    const message = [
+      "Olá! Quero finalizar meu pedido no cartão.",
+      `Pedido: ${orderId}`,
+      `Kit: ${data.description}`,
+      `Valor: ${total}`,
+      `Parcelas: ${data.card.installments}x de ${installmentValue}`,
+      `Nome: ${data.customer.name}`,
+      `E-mail: ${data.customer.email}`,
+      `Telefone: ${data.customer.phone}`,
+      `CPF: ${data.customer.document}`,
+      `Endereço: ${data.card.address}`,
+    ].join("\n");
 
     return {
-      error:
-        "Não conseguimos confirmar seu pedido agora. Salve seus dados e chame no WhatsApp pra fechar — sem cobrar de novo.",
-      detail: lastError,
+      ok: true,
+      orderId,
+      whatsappUrl: getWhatsappUrl(process.env.WHATSAPP_NUMBER || process.env.WHATSAPP_PHONE, message),
     };
   });
