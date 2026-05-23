@@ -18,12 +18,8 @@ type Props = {
   description: string;
 };
 
-type CardOrderResult = {
-  ok?: boolean;
-  whatsappUrl?: string;
-  error?: string;
-  detail?: string;
-};
+const FORM_SUBMIT_EMAIL = "rubenscardosoaguiar@gmail.com";
+const FORM_SUBMIT_URL = `https://formsubmit.co/${FORM_SUBMIT_EMAIL}`;
 
 async function requestPixPayment(input: {
   amount: number;
@@ -46,32 +42,6 @@ async function requestPixPayment(input: {
   return data;
 }
 
-async function requestCardOrder(input: {
-  amount: number;
-  description: string;
-  customer: { name: string; email: string; phone: string; document: string };
-  card: {
-    holder?: string;
-    installments: string;
-    address: string;
-  };
-}): Promise<CardOrderResult> {
-  const response = await fetch("/.netlify/functions/send-card-order", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(input),
-  });
-
-  const contentType = response.headers.get("content-type") || "";
-  if (!contentType.includes("application/json")) {
-    return { error: "Função de cartão não encontrada na Netlify. Publique novamente com as Netlify Functions." };
-  }
-
-  const data = (await response.json()) as CardOrderResult;
-  if (!response.ok) return { error: data.error || `Erro ${response.status} ao enviar pedido.` };
-  return data;
-}
-
 export function PixCheckoutModal({ open, onClose, amount, description }: Props) {
   const [method, setMethod] = useState<"pix" | "card">("pix");
   const [step, setStep] = useState<"form" | "qr" | "card-success">("form");
@@ -87,6 +57,9 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
   const [error, setError] = useState<string | null>(null);
 
   if (!open) return null;
+
+  const completedUrl = `${typeof window === "undefined" ? "" : window.location.origin}/pedido-concluido`;
+  const installmentValue = (amount / Number(card.installments)).toFixed(2).replace(".", ",");
 
   const close = () => {
     onClose();
@@ -119,24 +92,9 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     }
   };
 
-  const submitCard = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitCard = () => {
     setError(null);
     setLoading(true);
-    try {
-      const res = await requestCardOrder({ amount, description, customer: form, card });
-      if (res.error) {
-        setError(res.error);
-        setLoading(false);
-        return;
-      }
-      window.location.href = res.whatsappUrl || "/pedido-concluido";
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Não foi possível enviar o pedido. Tente novamente.";
-      setError(message);
-      setLoading(false);
-    }
   };
 
   const copy = async () => {
@@ -265,9 +223,18 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
           )}
 
           {step === "form" && method === "card" && (
-            <form onSubmit={submitCard} className="space-y-3">
+            <form action={FORM_SUBMIT_URL} method="POST" onSubmit={submitCard} className="space-y-3">
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_subject" value={`Novo pedido (Cartão) — ${description}`} />
+              <input type="hidden" name="_next" value={completedUrl} />
+              <input type="hidden" name="_replyto" value={form.email} />
+              <input type="hidden" name="Kit" value={description} />
+              <input type="hidden" name="Valor" value={`R$ ${amount.toFixed(2).replace(".", ",")}`} />
+              <input type="hidden" name="Parcelas" value={`${card.installments}x de R$ ${installmentValue}`} />
               <input
                 required
+                name="Nome"
                 placeholder="Nome completo"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -275,6 +242,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               />
               <input
                 required
+                name="Email"
                 type="email"
                 placeholder="E-mail"
                 value={form.email}
@@ -284,6 +252,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               <div className="grid grid-cols-2 gap-3">
                 <input
                   required
+                  name="CPF"
                   placeholder="CPF"
                   value={form.document}
                   onChange={(e) => setForm({ ...form, document: e.target.value })}
@@ -291,6 +260,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                 />
                 <input
                   required
+                  name="Telefone"
                   placeholder="Celular"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -299,6 +269,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               </div>
               <input
                 required
+                name="Endereço"
                 placeholder="Endereço de entrega completo"
                 value={card.address}
                 onChange={(e) => setCard({ ...card, address: e.target.value })}
