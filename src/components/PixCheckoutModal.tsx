@@ -53,7 +53,18 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PixResult | null>(null);
   const [copied, setCopied] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", document: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    document: "",
+    cep: "",
+    address: "",
+    number: "",
+    complement: "",
+    city: "",
+    state: "",
+  });
   const [card, setCard] = useState({
     holder: "",
     number: "",
@@ -76,7 +87,18 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
       setStep("form");
       setResult(null);
       setError(null);
-      setForm({ name: "", email: "", phone: "", document: "" });
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      document: "",
+      cep: "",
+      address: "",
+      number: "",
+      complement: "",
+      city: "",
+      state: "",
+    });
       setCard({ holder: "", number: "", expiry: "", cvv: "", installments: "1", address: "" });
     }, 200);
   };
@@ -86,7 +108,14 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
     setError(null);
     setLoading(true);
     try {
-      const res = await requestPixPayment({ amount, description, customer: form });
+      const enderecoCompleto = `${form.address}, ${form.number}${form.complement ? " - " + form.complement : ""} - ${form.city}/${form.state} - CEP ${form.cep}`;
+      const fullDescription = `${description} | Entrega: ${enderecoCompleto}`;
+      const { cep, address, number, complement, city, state, ...customer } = form;
+      const res = await requestPixPayment({
+        amount,
+        description: fullDescription,
+        customer,
+      });
       if (res.error || !res.pixCopyPaste) {
         setError(res.error || "Não foi possível gerar o PIX.");
       } else {
@@ -205,6 +234,57 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                 className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
               />
 
+              <div className="pt-2 border-t border-cream/10" />
+              <div className="text-xs text-cream/60 uppercase tracking-wider font-bold">
+                Endereço de entrega
+              </div>
+              <input
+                required
+                placeholder="CEP"
+                value={form.cep}
+                onChange={(e) => setForm({ ...form, cep: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+              />
+              <input
+                required
+                placeholder="Endereço (rua/avenida)"
+                value={form.address}
+                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  required
+                  placeholder="Número"
+                  value={form.number}
+                  onChange={(e) => setForm({ ...form, number: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+                />
+                <input
+                  placeholder="Complemento"
+                  value={form.complement}
+                  onChange={(e) => setForm({ ...form, complement: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+                />
+              </div>
+              <div className="grid grid-cols-[1fr_100px] gap-3">
+                <input
+                  required
+                  placeholder="Cidade"
+                  value={form.city}
+                  onChange={(e) => setForm({ ...form, city: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
+                />
+                <input
+                  required
+                  maxLength={2}
+                  placeholder="UF"
+                  value={form.state}
+                  onChange={(e) => setForm({ ...form, state: e.target.value.toUpperCase() })}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand uppercase"
+                />
+              </div>
+
               {error && (
                 <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
                   {error}
@@ -221,7 +301,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                     <Loader2 className="h-5 w-5 animate-spin" /> Gerando QR Code...
                   </>
                 ) : (
-                  <>GERAR PIX · R$ {amount.toFixed(2).replace(".", ",")}</>
+                  <>FINALIZAR · R$ {amount.toFixed(2).replace(".", ",")}</>
                 )}
               </button>
               <div className="flex items-center justify-center gap-2 text-xs text-cream/60 pt-1">
