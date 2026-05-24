@@ -240,13 +240,6 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
               </div>
               <input
                 required
-                placeholder="CEP"
-                value={form.cep}
-                onChange={(e) => setForm({ ...form, cep: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
-              />
-              <input
-                required
                 placeholder="Endereço (rua/avenida)"
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
@@ -267,7 +260,7 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                   className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
                 />
               </div>
-              <div className="grid grid-cols-[1fr_100px] gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <input
                   required
                   placeholder="Cidade"
@@ -277,11 +270,10 @@ export function PixCheckoutModal({ open, onClose, amount, description }: Props) 
                 />
                 <input
                   required
-                  maxLength={2}
-                  placeholder="UF"
-                  value={form.state}
-                  onChange={(e) => setForm({ ...form, state: e.target.value.toUpperCase() })}
-                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand uppercase"
+                  placeholder="CEP"
+                  value={form.cep}
+                  onChange={(e) => setForm({ ...form, cep: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-night border border-cream/10 text-cream placeholder:text-cream/40 focus:outline-none focus:border-brand"
                 />
               </div>
 
