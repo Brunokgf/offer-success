@@ -13,6 +13,12 @@ import {
   Gift,
   Package,
   X,
+  Instagram,
+  MessageCircle,
+  MapPin,
+  Lock,
+  CreditCard,
+  BadgeCheck,
 } from "lucide-react";
 import kit from "@/assets/kit-paixao.jpg";
 import { PixCheckoutModal } from "@/components/PixCheckoutModal";
@@ -23,6 +29,18 @@ import prodBaloes from "@/assets/produto-baloes.webp";
 import prodLingerie from "@/assets/produto-lingerie.webp";
 import prodVinho from "@/assets/produto-vinho.webp";
 import prodBombons from "@/assets/produto-bombons.jpg";
+
+// ====== CONFIG FÁCIL DE EDITAR ======
+const BRAND = {
+  cnpj: "00.000.000/0001-00", // troque pelo CNPJ real
+  instagram: "imperyumpresents", // sem @
+  whatsapp: "5511999999999", // só dígitos com DDI 55
+  whatsappLabel: "(11) 99999-9999",
+};
+const WHATSAPP_URL = `https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(
+  "Olá! Tenho uma dúvida sobre o Kit Paixão.",
+)}`;
+const INSTAGRAM_URL = `https://instagram.com/${BRAND.instagram}`;
 
 function CountdownBar() {
   // Conta regressiva até 12 de junho do ano corrente (Dia dos Namorados)
@@ -398,6 +416,9 @@ function Offer() {
             Escolha seu Kit Paixão
           </h2>
           <p className="text-muted-foreground text-base sm:text-lg">Quanto mais completo o kit, mais inesquecível a noite.</p>
+          <div className="mt-7 flex justify-center">
+            <OfferCountdown />
+          </div>
         </div>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 items-stretch">
           {plans.map((p) => (
@@ -435,6 +456,10 @@ function Offer() {
                   </li>
                 ))}
               </ul>
+              <StockBar
+                left={p.name === "Paixão" ? 7 : p.name === "Inferno" ? 4 : 12}
+                total={p.name === "Paixão" ? 30 : p.name === "Inferno" ? 20 : 40}
+              />
               <button
                 onClick={() => setOpenPlan(p)}
                 className="group relative block w-full text-center px-5 py-4 rounded-xl font-black tracking-wider text-base bg-gradient-brand text-brand-foreground shadow-warm transition-all hover:scale-[1.03] hover:shadow-[0_25px_60px_-15px_oklch(0.55_0.24_25/0.8)] ring-2 ring-gold/40 hover:ring-gold animate-pulse-slow"
@@ -693,15 +718,430 @@ function Footer() {
         <p className="max-w-2xl mx-auto opacity-70">
           Presentes que viram histórias. Montado e enviado do Brasil com muito amor (e fogo).
         </p>
+        <div className="flex flex-wrap justify-center items-center gap-4 pt-2 text-xs opacity-80">
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 hover:opacity-100"
+          >
+            <Instagram className="h-4 w-4" /> @{BRAND.instagram}
+          </a>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 hover:opacity-100"
+          >
+            <MessageCircle className="h-4 w-4" /> WhatsApp {BRAND.whatsappLabel}
+          </a>
+        </div>
+        <p className="text-xs opacity-70 pt-1">
+          Imperyum Presents · CNPJ {BRAND.cnpj}
+        </p>
         <div className="flex flex-wrap justify-center gap-4 text-xs opacity-70 pt-3">
           <a href="#" className="hover:opacity-100">Política de Privacidade</a>
           <a href="#" className="hover:opacity-100">Termos de Uso</a>
           <a href="#" className="hover:opacity-100">Trocas e Devoluções</a>
-          <a href="#" className="hover:opacity-100">Contato</a>
+          <a href="#politica-entrega" className="hover:opacity-100">Política de Entrega</a>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="hover:opacity-100">Contato</a>
         </div>
         <p className="text-xs opacity-50 pt-2">© 2026 Imperyum Presents. Todos os direitos reservados.</p>
       </div>
     </footer>
+  );
+}
+
+// ======================= NOVOS COMPONENTES =======================
+
+function OfferCountdown() {
+  // contador curto (48h) para urgência da promoção
+  const [end] = useState(() => {
+    const saved = typeof window !== "undefined" ? localStorage.getItem("kp_offer_end") : null;
+    if (saved && Number(saved) > Date.now()) return Number(saved);
+    const next = Date.now() + 1000 * 60 * 60 * 48;
+    if (typeof window !== "undefined") localStorage.setItem("kp_offer_end", String(next));
+    return next;
+  });
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = Math.max(0, end - now);
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const Box = ({ v, l }: { v: string; l: string }) => (
+    <div className="bg-ink/80 border border-brand/40 rounded-xl px-3 sm:px-4 py-2 min-w-[56px] sm:min-w-[68px] text-center shadow-warm">
+      <div className="font-mono font-black text-2xl sm:text-3xl text-brand leading-none">{v}</div>
+      <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-cream/60 mt-1">{l}</div>
+    </div>
+  );
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-brand font-bold">
+        <Flame className="h-4 w-4 animate-pulse" /> Oferta termina em
+      </div>
+      <div className="flex items-center gap-2">
+        <Box v={pad(h)} l="Horas" />
+        <span className="text-brand font-black text-2xl">:</span>
+        <Box v={pad(m)} l="Min" />
+        <span className="text-brand font-black text-2xl">:</span>
+        <Box v={pad(s)} l="Seg" />
+      </div>
+    </div>
+  );
+}
+
+function StockBar({ left, total }: { left: number; total: number }) {
+  const pct = Math.round((left / total) * 100);
+  return (
+    <div className="mt-4 mb-1">
+      <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider mb-1.5">
+        <span className="text-brand inline-flex items-center gap-1">
+          <Flame className="h-3 w-3" /> Estoque acabando
+        </span>
+        <span className="text-cream/80">{left} de {total} restantes</span>
+      </div>
+      <div className="h-2 w-full rounded-full bg-cream/10 overflow-hidden">
+        <div
+          className="h-full bg-gradient-brand shadow-warm transition-all"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+const RECENT_BUYERS = [
+  { name: "Ana C.", city: "Rio de Janeiro/RJ", kit: "Kit Paixão" },
+  { name: "Rafael M.", city: "Curitiba/PR", kit: "Kit Inferno" },
+  { name: "Juliana S.", city: "Salvador/BA", kit: "Kit Paixão" },
+  { name: "Pedro H.", city: "São Paulo/SP", kit: "Kit Inferno" },
+  { name: "Mariana O.", city: "Porto Alegre/RS", kit: "Kit Romance" },
+  { name: "Lucas F.", city: "Brasília/DF", kit: "Kit Paixão" },
+  { name: "Camila R.", city: "Recife/PE", kit: "Kit Inferno" },
+  { name: "Bruno A.", city: "Belo Horizonte/MG", kit: "Kit Paixão" },
+];
+
+function RecentPurchasePopup() {
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    let i = 0;
+    const cycle = () => {
+      setIdx(i % RECENT_BUYERS.length);
+      setVisible(true);
+      setTimeout(() => setVisible(false), 5500);
+      i++;
+    };
+    const startTimer = setTimeout(cycle, 4000);
+    const id = setInterval(cycle, 11000);
+    return () => {
+      clearTimeout(startTimer);
+      clearInterval(id);
+    };
+  }, []);
+  const b = RECENT_BUYERS[idx];
+  const minutes = ((idx * 3 + 2) % 14) + 1;
+  return (
+    <div
+      className={`fixed left-3 sm:left-5 bottom-3 sm:bottom-5 z-40 max-w-[300px] transition-all duration-500 ${
+        visible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0 pointer-events-none"
+      }`}
+      aria-live="polite"
+    >
+      <div className="bg-ink/95 backdrop-blur border border-brand/30 rounded-xl shadow-warm p-3 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-gradient-brand flex items-center justify-center text-brand-foreground font-bold text-sm shrink-0">
+          {b.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+        </div>
+        <div className="text-xs leading-tight">
+          <div className="text-cream font-bold">{b.name}</div>
+          <div className="text-cream/70">comprou o <span className="text-brand font-semibold">{b.kit}</span></div>
+          <div className="text-cream/50 text-[10px] mt-0.5">
+            {b.city} · há {minutes} min
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WhatsAppFloat() {
+  return (
+    <a
+      href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Falar no WhatsApp"
+      className="fixed right-4 bottom-4 sm:right-6 sm:bottom-6 z-40 w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-warm hover:scale-110 transition-transform"
+    >
+      <MessageCircle className="h-7 w-7" />
+      <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-40" />
+    </a>
+  );
+}
+
+function TrustSeals() {
+  return (
+    <section className="py-10 sm:py-12 border-y border-border">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="text-center mb-6">
+          <span className="text-brand font-semibold uppercase tracking-wider text-xs">Loja oficial · Empresa registrada</span>
+          <h3 className="text-xl sm:text-2xl font-black text-foreground mt-1">
+            Compra 100% segura e protegida
+          </h3>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          {[
+            { icon: BadgeCheck, t: "CNPJ ativo", s: BRAND.cnpj },
+            { icon: Lock, t: "Site seguro SSL", s: "Dados criptografados" },
+            { icon: CreditCard, t: "Pagamento seguro", s: "Pix · Cartão · Boleto" },
+            { icon: ShieldCheck, t: "Garantia 7 dias", s: "Devolução sem perguntas" },
+          ].map((it) => (
+            <div key={it.t} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3 shadow-card">
+              <it.icon className="h-8 w-8 text-brand shrink-0" />
+              <div className="leading-tight">
+                <div className="text-sm font-bold text-foreground">{it.t}</div>
+                <div className="text-[11px] text-muted-foreground">{it.s}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-5 mt-6 text-xs text-muted-foreground">
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-brand transition-colors">
+            <Instagram className="h-4 w-4" /> @{BRAND.instagram}
+          </a>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-brand transition-colors">
+            <MessageCircle className="h-4 w-4" /> {BRAND.whatsappLabel}
+          </a>
+          <span className="inline-flex items-center gap-1.5">
+            <Truck className="h-4 w-4" /> Enviamos para todo o Brasil
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DeliveryCalculator() {
+  const [cep, setCep] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<
+    null | { city: string; uf: string; days: string; price: string }
+  >(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function calcular(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setResult(null);
+    const clean = cep.replace(/\D/g, "");
+    if (clean.length !== 8) {
+      setError("Digite um CEP válido (8 dígitos).");
+      return;
+    }
+    setLoading(true);
+    try {
+      const r = await fetch(`https://viacep.com.br/ws/${clean}/json/`);
+      const data = await r.json();
+      if (data.erro) {
+        setError("CEP não encontrado.");
+        return;
+      }
+      const uf: string = data.uf;
+      const sudeste = ["SP", "RJ", "MG", "ES"];
+      const sul = ["PR", "SC", "RS"];
+      const nordeste = ["BA", "SE", "AL", "PE", "PB", "RN", "CE", "PI", "MA"];
+      const centro = ["DF", "GO", "MT", "MS"];
+      let days = "5 a 8 dias úteis";
+      let price = "R$ 29,90";
+      if (sudeste.includes(uf)) { days = "2 a 4 dias úteis"; price = "GRÁTIS"; }
+      else if (sul.includes(uf)) { days = "3 a 5 dias úteis"; price = "GRÁTIS"; }
+      else if (centro.includes(uf)) { days = "4 a 6 dias úteis"; price = "R$ 19,90"; }
+      else if (nordeste.includes(uf)) { days = "5 a 8 dias úteis"; price = "R$ 24,90"; }
+      else { days = "6 a 10 dias úteis"; price = "R$ 34,90"; }
+      setResult({ city: data.localidade, uf, days, price });
+    } catch {
+      setError("Não conseguimos consultar agora. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <section id="politica-entrega" className="py-16 lg:py-20">
+      <div className="container mx-auto px-4 max-w-3xl">
+        <div className="bg-card border-2 border-brand/30 rounded-3xl p-6 sm:p-8 shadow-card">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-brand flex items-center justify-center shadow-warm">
+              <Truck className="h-6 w-6 text-brand-foreground" />
+            </div>
+            <div>
+              <h3 className="text-xl sm:text-2xl font-black text-ink leading-tight">
+                Calcule seu prazo de entrega
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Envio em até 24h via transportadora expressa.
+              </p>
+            </div>
+          </div>
+          <form onSubmit={calcular} className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="Digite seu CEP (somente números)"
+                value={cep}
+                onChange={(e) => setCep(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                className="w-full pl-9 pr-3 py-3 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-gradient-brand text-brand-foreground font-bold px-6 py-3 rounded-xl shadow-warm hover:scale-[1.02] transition-transform disabled:opacity-60"
+            >
+              {loading ? "Calculando..." : "Calcular prazo"}
+            </button>
+          </form>
+          <a
+            href="https://buscacepinter.correios.com.br/app/endereco/index.php"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-muted-foreground hover:text-brand inline-block mt-2"
+          >
+            Não sei meu CEP
+          </a>
+
+          {error && (
+            <div className="mt-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>
+          )}
+          {result && (
+            <div className="mt-5 rounded-2xl border border-brand/40 bg-brand/5 p-5">
+              <div className="text-xs uppercase tracking-wider text-brand font-bold mb-1">
+                {result.city}/{result.uf}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-xs text-muted-foreground">Prazo estimado</div>
+                  <div className="text-lg font-black text-foreground inline-flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-brand" /> {result.days}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Frete</div>
+                  <div className={`text-lg font-black ${result.price === "GRÁTIS" ? "text-success" : "text-foreground"}`}>
+                    {result.price}
+                  </div>
+                </div>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-3">
+                Prazo a partir da postagem. Pedidos aprovados em dias úteis até 14h saem no mesmo dia.
+              </p>
+            </div>
+          )}
+
+          <div className="grid sm:grid-cols-3 gap-3 mt-6 text-xs">
+            <div className="bg-background/50 rounded-lg p-3 border border-border">
+              <div className="font-bold text-foreground mb-0.5">Envio em 24h</div>
+              <div className="text-muted-foreground">Direto do nosso CD em SP</div>
+            </div>
+            <div className="bg-background/50 rounded-lg p-3 border border-border">
+              <div className="font-bold text-foreground mb-0.5">Código de rastreio</div>
+              <div className="text-muted-foreground">Enviado por e-mail e WhatsApp</div>
+            </div>
+            <div className="bg-background/50 rounded-lg p-3 border border-border">
+              <div className="font-bold text-foreground mb-0.5">Embalagem discreta</div>
+              <div className="text-muted-foreground">Caixa lacrada · ninguém vê o que tem dentro</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PhotoReviews() {
+  const reviews = [
+    {
+      img: prodJoias,
+      name: "Larissa T.",
+      city: "Campinas/SP",
+      text: "As joias chegaram lindas, embalagem perfeita. Meu noivo amou a surpresa 😍",
+      rating: 5,
+    },
+    {
+      img: prodCaixa,
+      name: "Diego R.",
+      city: "Niterói/RJ",
+      text: "Caixa coração com ursinho ficou top. Ela chorou quando abriu. Recomendo!",
+      rating: 5,
+    },
+    {
+      img: prodRosas,
+      name: "Patrícia L.",
+      city: "Goiânia/GO",
+      text: "Rosas naturais lindas, dura muito mais que comprei em florista. Voltarei!",
+      rating: 5,
+    },
+    {
+      img: prodLingerie,
+      name: "Camila & João",
+      city: "Fortaleza/CE",
+      text: "Lingerie veio do tamanho certo, tecido bom mesmo. Noite foi inesquecível 🔥",
+      rating: 5,
+    },
+    {
+      img: prodVinho,
+      name: "Rodrigo S.",
+      city: "Vitória/ES",
+      text: "O vinho é de qualidade, não é vinho ruim de mercado. Combinou perfeito.",
+      rating: 5,
+    },
+    {
+      img: prodBombons,
+      name: "Tatiane M.",
+      city: "Sorocaba/SP",
+      text: "Bombons gourmet maravilhosos, caixa luxuosa. Vale cada centavo.",
+      rating: 5,
+    },
+  ];
+  return (
+    <section className="py-16 lg:py-20">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="text-center mb-10">
+          <span className="text-brand font-semibold uppercase tracking-wider text-sm">Fotos reais de clientes</span>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mt-2 text-foreground">
+            Veja como o kit chega na <span className="text-brand">casa de quem comprou</span>
+          </h2>
+        </div>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+          {reviews.map((r) => (
+            <div key={r.name} className="bg-card border border-border rounded-2xl overflow-hidden shadow-card flex flex-col">
+              <div className="aspect-square overflow-hidden bg-ink">
+                <img src={r.img} alt={`Foto enviada por ${r.name}`} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+              </div>
+              <div className="p-4 flex flex-col gap-2">
+                <div className="flex">
+                  {Array.from({ length: r.rating }).map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-brand text-brand" />
+                  ))}
+                </div>
+                <p className="text-sm text-foreground italic leading-snug">"{r.text}"</p>
+                <div className="text-xs text-muted-foreground pt-1 border-t border-border mt-1 flex items-center justify-between">
+                  <span className="font-bold text-foreground">{r.name}</span>
+                  <span>{r.city}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -711,14 +1151,19 @@ export function LandingPage() {
       <CountdownBar />
       <Hero />
       <TrustStrip />
+      <TrustSeals />
       <HowItWorks />
       <Why />
       <Testimonials />
+      <PhotoReviews />
       <Offer />
+      <DeliveryCalculator />
       <Guarantee />
       <FAQ />
       <FinalCTA />
       <Footer />
+      <RecentPurchasePopup />
+      <WhatsAppFloat />
     </main>
   );
 }
