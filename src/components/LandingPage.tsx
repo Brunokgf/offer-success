@@ -416,6 +416,9 @@ function Offer() {
             Escolha seu Kit Paixão
           </h2>
           <p className="text-muted-foreground text-base sm:text-lg">Quanto mais completo o kit, mais inesquecível a noite.</p>
+          <div className="mt-7 flex justify-center">
+            <OfferCountdown />
+          </div>
         </div>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 items-stretch">
           {plans.map((p) => (
@@ -453,6 +456,10 @@ function Offer() {
                   </li>
                 ))}
               </ul>
+              <StockBar
+                left={p.name === "Paixão" ? 7 : p.name === "Inferno" ? 4 : 12}
+                total={p.name === "Paixão" ? 30 : p.name === "Inferno" ? 20 : 40}
+              />
               <button
                 onClick={() => setOpenPlan(p)}
                 className="group relative block w-full text-center px-5 py-4 rounded-xl font-black tracking-wider text-base bg-gradient-brand text-brand-foreground shadow-warm transition-all hover:scale-[1.03] hover:shadow-[0_25px_60px_-15px_oklch(0.55_0.24_25/0.8)] ring-2 ring-gold/40 hover:ring-gold animate-pulse-slow"
