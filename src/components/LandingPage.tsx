@@ -13,6 +13,12 @@ import {
   Gift,
   Package,
   X,
+  Instagram,
+  MessageCircle,
+  MapPin,
+  Lock,
+  CreditCard,
+  BadgeCheck,
 } from "lucide-react";
 import kit from "@/assets/kit-paixao.jpg";
 import { PixCheckoutModal } from "@/components/PixCheckoutModal";
@@ -23,6 +29,18 @@ import prodBaloes from "@/assets/produto-baloes.webp";
 import prodLingerie from "@/assets/produto-lingerie.webp";
 import prodVinho from "@/assets/produto-vinho.webp";
 import prodBombons from "@/assets/produto-bombons.jpg";
+
+// ====== CONFIG FÁCIL DE EDITAR ======
+const BRAND = {
+  cnpj: "00.000.000/0001-00", // troque pelo CNPJ real
+  instagram: "imperyumpresents", // sem @
+  whatsapp: "5511999999999", // só dígitos com DDI 55
+  whatsappLabel: "(11) 99999-9999",
+};
+const WHATSAPP_URL = `https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(
+  "Olá! Tenho uma dúvida sobre o Kit Paixão.",
+)}`;
+const INSTAGRAM_URL = `https://instagram.com/${BRAND.instagram}`;
 
 function CountdownBar() {
   // Conta regressiva até 12 de junho do ano corrente (Dia dos Namorados)
