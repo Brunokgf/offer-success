@@ -34,8 +34,8 @@ import prodBombons from "@/assets/produto-bombons.jpg";
 const BRAND = {
   cnpj: "00.000.000/0001-00", // troque pelo CNPJ real
   instagram: "imperyumpresents", // sem @
-  whatsapp: "5511999999999", // só dígitos com DDI 55
-  whatsappLabel: "(11) 99999-9999",
+  whatsapp: "555399313454", // só dígitos com DDI 55
+  whatsappLabel: "(53) 9931-3454",
 };
 const WHATSAPP_URL = `https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(
   "Olá! Tenho uma dúvida sobre o Kit Paixão.",
