@@ -29,6 +29,10 @@ import prodBaloes from "@/assets/produto-baloes.webp";
 import prodLingerie from "@/assets/produto-lingerie.webp";
 import prodVinho from "@/assets/produto-vinho.webp";
 import prodBombons from "@/assets/produto-bombons.jpg";
+import reviewHome1 from "@/assets/review-home-1.jpg";
+import reviewHome2 from "@/assets/review-home-2.jpg";
+import reviewHome3 from "@/assets/review-home-3.jpg";
+import reviewHome4 from "@/assets/review-home-4.jpg";
 
 // ====== CONFIG FÁCIL DE EDITAR ======
 const BRAND = {
