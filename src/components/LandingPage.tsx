@@ -29,6 +29,10 @@ import prodBaloes from "@/assets/produto-baloes.webp";
 import prodLingerie from "@/assets/produto-lingerie.webp";
 import prodVinho from "@/assets/produto-vinho.webp";
 import prodBombons from "@/assets/produto-bombons.jpg";
+import reviewHome1 from "@/assets/review-home-1.jpg";
+import reviewHome2 from "@/assets/review-home-2.jpg";
+import reviewHome3 from "@/assets/review-home-3.jpg";
+import reviewHome4 from "@/assets/review-home-4.jpg";
 
 // ====== CONFIG FÁCIL DE EDITAR ======
 const BRAND = {
@@ -1072,78 +1076,253 @@ function DeliveryCalculator() {
 function PhotoReviews() {
   const reviews = [
     {
-      img: prodJoias,
+      img: reviewHome1,
       name: "Larissa T.",
       city: "Campinas/SP",
+      kit: "Kit Paixão",
+      text: "Chegou super rápido e a embalagem é linda de verdade. Montei na cabeceira do nosso quarto e ficou perfeito. Foto real, sem filtro nenhum 😍",
+      rating: 5,
+      date: "há 3 dias",
+    },
+    {
+      img: reviewHome2,
+      name: "Camila & João",
+      city: "Fortaleza/CE",
+      kit: "Kit Inferno",
+      text: "Gente do céu, a caixa coração é MUITO melhor pessoalmente. As joias vieram numa caixinha de veludo separada. Vale cada centavo.",
+      rating: 5,
+      date: "há 1 semana",
+    },
+    {
+      img: reviewHome3,
+      name: "Patrícia L.",
+      city: "Goiânia/GO",
+      kit: "Kit Inferno",
+      text: "Montei a surpresa no quarto exatamente como vi no site. Ele entrou e ficou sem palavras. Recomendo de olhos fechados 🔥",
+      rating: 5,
+      date: "há 2 semanas",
+    },
+    {
+      img: reviewHome4,
+      name: "Tatiane M.",
+      city: "Sorocaba/SP",
+      kit: "Kit Romance",
+      text: "Servi de jantar surpresa em casa, ficou um charme. Os bombons são gourmet de verdade e o mapa estelar emoldurado é o ponto alto.",
+      rating: 5,
+      date: "há 2 semanas",
+    },
+    {
+      img: prodJoias,
+      name: "Beatriz N.",
+      city: "Florianópolis/SC",
+      kit: "Kit Inferno",
       text: "As joias chegaram lindas, embalagem perfeita. Meu noivo amou a surpresa 😍",
       rating: 5,
+      date: "há 3 semanas",
     },
     {
       img: prodCaixa,
       name: "Diego R.",
       city: "Niterói/RJ",
+      kit: "Kit Paixão",
       text: "Caixa coração com ursinho ficou top. Ela chorou quando abriu. Recomendo!",
       rating: 5,
-    },
-    {
-      img: prodRosas,
-      name: "Patrícia L.",
-      city: "Goiânia/GO",
-      text: "Rosas naturais lindas, dura muito mais que comprei em florista. Voltarei!",
-      rating: 5,
-    },
-    {
-      img: prodLingerie,
-      name: "Camila & João",
-      city: "Fortaleza/CE",
-      text: "Lingerie veio do tamanho certo, tecido bom mesmo. Noite foi inesquecível 🔥",
-      rating: 5,
+      date: "há 1 mês",
     },
     {
       img: prodVinho,
       name: "Rodrigo S.",
       city: "Vitória/ES",
+      kit: "Kit Paixão",
       text: "O vinho é de qualidade, não é vinho ruim de mercado. Combinou perfeito.",
       rating: 5,
+      date: "há 1 mês",
     },
     {
-      img: prodBombons,
-      name: "Tatiane M.",
-      city: "Sorocaba/SP",
-      text: "Bombons gourmet maravilhosos, caixa luxuosa. Vale cada centavo.",
+      img: prodLingerie,
+      name: "Marina P.",
+      city: "São Paulo/SP",
+      kit: "Kit Inferno",
+      text: "Lingerie veio do tamanho certo, tecido bom mesmo. Noite foi inesquecível 🔥",
       rating: 5,
+      date: "há 1 mês",
+    },
+    {
+      img: prodRosas,
+      name: "Aline G.",
+      city: "Belo Horizonte/MG",
+      kit: "Kit Romance",
+      text: "Rosas naturais lindas, duraram bem mais que comprei em florista. Voltarei!",
+      rating: 5,
+      date: "há 2 meses",
     },
   ];
+  const total = 1247;
+  const avg = 4.9;
+  const dist = [
+    { stars: 5, pct: 94 },
+    { stars: 4, pct: 5 },
+    { stars: 3, pct: 1 },
+    { stars: 2, pct: 0 },
+    { stars: 1, pct: 0 },
+  ];
+  const [showAll, setShowAll] = useState(false);
+  const [lightbox, setLightbox] = useState<number | null>(null);
+  const visible = showAll ? reviews : reviews.slice(0, 3);
   return (
-    <section className="py-16 lg:py-20">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="text-center mb-10">
-          <span className="text-brand font-semibold uppercase tracking-wider text-sm">Fotos reais de clientes</span>
+    <section id="avaliacoes" className="py-16 lg:py-20 bg-muted/30">
+      <div className="container mx-auto px-4 max-w-5xl">
+        <div className="text-center mb-8">
+          <span className="text-brand font-semibold uppercase tracking-wider text-sm">Avaliações dos clientes</span>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mt-2 text-foreground">
-            Veja como o kit chega na <span className="text-brand">casa de quem comprou</span>
+            O que dizem <span className="text-brand">quem já comprou</span>
           </h2>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
-          {reviews.map((r) => (
-            <div key={r.name} className="bg-card border border-border rounded-2xl overflow-hidden shadow-card flex flex-col">
-              <div className="aspect-square overflow-hidden bg-ink">
-                <img src={r.img} alt={`Foto enviada por ${r.name}`} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+
+        {/* Cabeçalho com nota — estilo Shopee/ML */}
+        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-card mb-6">
+          <div className="grid md:grid-cols-[auto_1fr] gap-6 items-center">
+            <div className="text-center md:border-r md:border-border md:pr-6">
+              <div className="text-5xl sm:text-6xl font-black text-foreground leading-none">
+                {avg.toFixed(1).replace(".", ",")}
               </div>
-              <div className="p-4 flex flex-col gap-2">
-                <div className="flex">
-                  {Array.from({ length: r.rating }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-brand text-brand" />
-                  ))}
-                </div>
-                <p className="text-sm text-foreground italic leading-snug">"{r.text}"</p>
-                <div className="text-xs text-muted-foreground pt-1 border-t border-border mt-1 flex items-center justify-between">
-                  <span className="font-bold text-foreground">{r.name}</span>
-                  <span>{r.city}</span>
-                </div>
+              <div className="flex justify-center mt-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-brand text-brand" />
+                ))}
+              </div>
+              <div className="text-xs text-muted-foreground mt-1.5">
+                {total.toLocaleString("pt-BR")} avaliações
               </div>
             </div>
+            <div className="space-y-1.5">
+              {dist.map((d) => (
+                <div key={d.stars} className="flex items-center gap-2 text-xs sm:text-sm">
+                  <span className="w-6 text-muted-foreground font-medium">{d.stars}★</span>
+                  <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                    <div className="h-full bg-brand" style={{ width: `${d.pct}%` }} />
+                  </div>
+                  <span className="w-10 text-right text-muted-foreground">{d.pct}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Faixa de fotos — estilo Shopee */}
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-card mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-foreground">Fotos enviadas pelos clientes</span>
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full font-semibold">
+                {reviews.length}
+              </span>
+            </div>
+            <button
+              onClick={() => setShowAll(true)}
+              className="text-xs sm:text-sm text-brand font-bold hover:underline"
+            >
+              Ver todas ›
+            </button>
+          </div>
+          <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-1 -mx-1 px-1 snap-x">
+            {reviews.map((r, i) => (
+              <button
+                key={i}
+                onClick={() => setLightbox(i)}
+                className="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border border-border hover:border-brand transition-colors snap-start"
+                aria-label={`Ver foto de ${r.name}`}
+              >
+                <img src={r.img} alt={`Foto enviada por ${r.name}`} loading="lazy" className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Lista de avaliações */}
+        <div className="space-y-3">
+          {visible.map((r, i) => (
+            <article key={i} className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-card">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-brand text-brand-foreground flex items-center justify-center font-black text-sm shrink-0">
+                  {r.name.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                    <span className="font-bold text-foreground text-sm">{r.name}</span>
+                    <span className="text-xs text-muted-foreground">· {r.city}</span>
+                    <BadgeCheck className="h-3.5 w-3.5 text-success" />
+                    <span className="text-[10px] text-success font-bold uppercase tracking-wider">Compra verificada</span>
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex">
+                      {Array.from({ length: r.rating }).map((_, j) => (
+                        <Star key={j} className="h-3.5 w-3.5 fill-brand text-brand" />
+                      ))}
+                    </div>
+                    <span className="text-[11px] text-muted-foreground">{r.date}</span>
+                    <span className="text-[11px] text-muted-foreground">· {r.kit}</span>
+                  </div>
+                  <p className="text-sm text-foreground leading-relaxed mt-2">{r.text}</p>
+                  <button
+                    onClick={() => setLightbox(reviews.indexOf(r))}
+                    className="mt-3 inline-block rounded-lg overflow-hidden border border-border hover:border-brand transition-colors"
+                  >
+                    <img src={r.img} alt={`Foto de ${r.name}`} loading="lazy" className="w-24 h-24 sm:w-28 sm:h-28 object-cover" />
+                  </button>
+                </div>
+              </div>
+            </article>
           ))}
         </div>
+
+        {!showAll && (
+          <div className="text-center mt-6">
+            <button
+              onClick={() => setShowAll(true)}
+              className="inline-flex items-center gap-2 bg-card hover:bg-muted border border-border px-6 py-3 rounded-xl font-bold text-sm text-foreground transition-colors"
+            >
+              Ver todas as {total.toLocaleString("pt-BR")} avaliações
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Lightbox */}
+        {lightbox !== null && (
+          <div
+            className="fixed inset-0 z-[70] bg-ink/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
+            onClick={() => setLightbox(null)}
+          >
+            <button
+              onClick={() => setLightbox(null)}
+              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-night/90 hover:bg-brand text-cream flex items-center justify-center border border-cream/10"
+              aria-label="Fechar"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="max-w-3xl w-full" onClick={(e) => e.stopPropagation()}>
+              <img
+                src={reviews[lightbox].img}
+                alt={`Foto de ${reviews[lightbox].name}`}
+                className="w-full max-h-[70vh] object-contain rounded-2xl"
+              />
+              <div className="bg-card text-foreground p-4 rounded-2xl mt-3 border border-border">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-bold text-sm">{reviews[lightbox].name}</span>
+                  <span className="text-xs text-muted-foreground">· {reviews[lightbox].city}</span>
+                  <BadgeCheck className="h-3.5 w-3.5 text-success" />
+                </div>
+                <div className="flex mb-2">
+                  {Array.from({ length: reviews[lightbox].rating }).map((_, j) => (
+                    <Star key={j} className="h-3.5 w-3.5 fill-brand text-brand" />
+                  ))}
+                </div>
+                <p className="text-sm leading-relaxed">{reviews[lightbox].text}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
