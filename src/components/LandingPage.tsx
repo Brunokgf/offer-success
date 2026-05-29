@@ -32,7 +32,7 @@ import prodBombons from "@/assets/produto-bombons.jpg";
 
 // ====== CONFIG FÁCIL DE EDITAR ======
 const BRAND = {
-  cnpj: "00.000.000/0001-00", // troque pelo CNPJ real
+  cnpj: "09.511.593/0001-25",
   instagram: "imperyumpresents", // sem @
   whatsapp: "555399313454", // só dígitos com DDI 55
   whatsappLabel: "(53) 9931-3454",
@@ -756,23 +756,27 @@ function Footer() {
 
 function OfferCountdown() {
   // contador curto (48h) para urgência da promoção
-  const [end] = useState(() => {
-    const saved = typeof window !== "undefined" ? localStorage.getItem("kp_offer_end") : null;
-    if (saved && Number(saved) > Date.now()) return Number(saved);
-    const next = Date.now() + 1000 * 60 * 60 * 48;
-    if (typeof window !== "undefined") localStorage.setItem("kp_offer_end", String(next));
-    return next;
-  });
-  const [now, setNow] = useState(Date.now());
+  const [mounted, setMounted] = useState(false);
+  const [time, setTime] = useState({ h: 48, m: 0, s: 0 });
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
+    setMounted(true);
+    const saved = localStorage.getItem("kp_offer_end");
+    let end = saved && Number(saved) > Date.now() ? Number(saved) : Date.now() + 1000 * 60 * 60 * 48;
+    if (!saved || Number(saved) <= Date.now()) localStorage.setItem("kp_offer_end", String(end));
+    const tick = () => {
+      const diff = Math.max(0, end - Date.now());
+      setTime({
+        h: Math.floor(diff / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
-  const diff = Math.max(0, end - now);
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
   const pad = (n: number) => String(n).padStart(2, "0");
+  const { h, m, s } = mounted ? time : { h: 48, m: 0, s: 0 };
   const Box = ({ v, l }: { v: string; l: string }) => (
     <div className="bg-ink/80 border border-brand/40 rounded-xl px-3 sm:px-4 py-2 min-w-[56px] sm:min-w-[68px] text-center shadow-warm">
       <div className="font-mono font-black text-2xl sm:text-3xl text-brand leading-none">{v}</div>
