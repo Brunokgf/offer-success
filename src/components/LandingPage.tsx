@@ -832,6 +832,28 @@ const RECENT_BUYERS = [
   { name: "Lucas F.", city: "Brasília/DF", kit: "Kit Paixão" },
   { name: "Camila R.", city: "Recife/PE", kit: "Kit Inferno" },
   { name: "Bruno A.", city: "Belo Horizonte/MG", kit: "Kit Paixão" },
+  { name: "Fernanda L.", city: "Fortaleza/CE", kit: "Kit Paixão" },
+  { name: "Thiago S.", city: "Florianópolis/SC", kit: "Kit Inferno" },
+  { name: "Patrícia N.", city: "Manaus/AM", kit: "Kit Romance" },
+  { name: "Diego K.", city: "Goiânia/GO", kit: "Kit Paixão" },
+  { name: "Larissa T.", city: "Vitória/ES", kit: "Kit Inferno" },
+  { name: "Gabriel P.", city: "Campinas/SP", kit: "Kit Paixão" },
+  { name: "Aline M.", city: "Natal/RN", kit: "Kit Romance" },
+  { name: "Rodrigo B.", city: "São Luís/MA", kit: "Kit Inferno" },
+  { name: "Carolina D.", city: "Maceió/AL", kit: "Kit Paixão" },
+  { name: "Eduardo V.", city: "Teresina/PI", kit: "Kit Paixão" },
+  { name: "Beatriz G.", city: "João Pessoa/PB", kit: "Kit Romance" },
+  { name: "Felipe J.", city: "Ribeirão Preto/SP", kit: "Kit Inferno" },
+  { name: "Isabela H.", city: "Sorocaba/SP", kit: "Kit Paixão" },
+  { name: "Henrique W.", city: "Cuiabá/MT", kit: "Kit Paixão" },
+  { name: "Vanessa Q.", city: "Aracaju/SE", kit: "Kit Romance" },
+  { name: "Matheus Z.", city: "Londrina/PR", kit: "Kit Inferno" },
+  { name: "Amanda X.", city: "Uberlândia/MG", kit: "Kit Paixão" },
+  { name: "Leandro Y.", city: "Joinville/SC", kit: "Kit Paixão" },
+  { name: "Tatiane U.", city: "Macapá/AP", kit: "Kit Inferno" },
+  { name: "Ricardo I.", city: "Boa Vista/RR", kit: "Kit Romance" },
+  { name: "Jéssica O.", city: "Palmas/TO", kit: "Kit Paixão" },
+  { name: "Marcelo E.", city: "Ponta Grossa/PR", kit: "Kit Inferno" },
 ];
 
 function RecentPurchasePopup() {
@@ -842,11 +864,11 @@ function RecentPurchasePopup() {
     const cycle = () => {
       setIdx(i % RECENT_BUYERS.length);
       setVisible(true);
-      setTimeout(() => setVisible(false), 5500);
+      setTimeout(() => setVisible(false), 4500);
       i++;
     };
-    const startTimer = setTimeout(cycle, 4000);
-    const id = setInterval(cycle, 11000);
+    const startTimer = setTimeout(cycle, 2500);
+    const id = setInterval(cycle, 6500);
     return () => {
       clearTimeout(startTimer);
       clearInterval(id);
@@ -873,6 +895,74 @@ function RecentPurchasePopup() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+const ACTIVITY_EVENTS = [
+  { name: "Ana C.", city: "Rio de Janeiro", kit: "Kit Paixão", action: "comprou" },
+  { name: "Rafael M.", city: "Curitiba", kit: "Kit Inferno", action: "comprou" },
+  { name: "Juliana S.", city: "Salvador", kit: "Kit Paixão", action: "comprou" },
+  { name: "Pedro H.", city: "São Paulo", kit: "Kit Inferno", action: "comprou" },
+  { name: "Mariana O.", city: "Porto Alegre", kit: "Kit Romance", action: "comprou" },
+  { name: "Lucas F.", city: "Brasília", kit: "Kit Paixão", action: "comprou" },
+  { name: "Camila R.", city: "Recife", kit: "Kit Inferno", action: "comprou" },
+  { name: "Bruno A.", city: "Belo Horizonte", kit: "Kit Paixão", action: "comprou" },
+  { name: "Fernanda L.", city: "Fortaleza", kit: "Kit Paixão", action: "comprou" },
+  { name: "Thiago S.", city: "Florianópolis", kit: "Kit Inferno", action: "comprou" },
+  { name: "Patrícia N.", city: "Manaus", kit: "Kit Romance", action: "comprou" },
+  { name: "Diego K.", city: "Goiânia", kit: "Kit Paixão", action: "comprou" },
+  { name: "Larissa T.", city: "Vitória", kit: "Kit Inferno", action: "comprou" },
+  { name: "Gabriel P.", city: "Campinas", kit: "Kit Paixão", action: "comprou" },
+  { name: "Aline M.", city: "Natal", kit: "Kit Romance", action: "comprou" },
+  { name: "Rodrigo B.", city: "São Luís", kit: "Kit Inferno", action: "comprou" },
+  { name: "Carolina D.", city: "Maceió", kit: "Kit Paixão", action: "comprou" },
+  { name: "Eduardo V.", city: "Teresina", kit: "Kit Paixão", action: "comprou" },
+  { name: "Beatriz G.", city: "João Pessoa", kit: "Kit Romance", action: "comprou" },
+  { name: "Felipe J.", city: "Ribeirão Preto", kit: "Kit Inferno", action: "comprou" },
+];
+
+function TopRightNotifications() {
+  const [events, setEvents] = useState<Array<{ id: number; name: string; city: string; kit: string; action: string; seconds: number }>>([]);
+  const idRef = useState(0)[0];
+  const nextId = { current: 0 };
+  useEffect(() => {
+    const add = () => {
+      const ev = ACTIVITY_EVENTS[nextId.current % ACTIVITY_EVENTS.length];
+      nextId.current += 1;
+      const seconds = (Math.floor(Math.random() * 8) + 2);
+      const newEvt = { id: nextId.current, ...ev, seconds };
+      setEvents((prev) => [...prev.slice(-2), newEvt]);
+      setTimeout(() => {
+        setEvents((prev) => prev.filter((e) => e.id !== newEvt.id));
+      }, 5000);
+    };
+    add();
+    const id = setInterval(add, 4000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="fixed top-3 right-3 sm:top-5 sm:right-5 z-40 flex flex-col gap-2 items-end pointer-events-none">
+      {events.map((e) => (
+        <div
+          key={e.id}
+          className="bg-ink/95 backdrop-blur border border-brand/30 rounded-xl shadow-warm px-3 py-2.5 max-w-[280px] text-xs leading-tight animate-in slide-in-from-right fade-in duration-300"
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-gradient-brand flex items-center justify-center text-brand-foreground font-bold text-[10px] shrink-0">
+              {e.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+            </div>
+            <div>
+              <span className="font-bold text-cream">{e.name}</span>
+              <span className="text-cream/70"> {e.action} o </span>
+              <span className="text-brand font-semibold">{e.kit}</span>
+              <div className="text-cream/50 text-[10px] mt-0.5">
+                {e.city} · há {e.seconds} min
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -1346,6 +1436,7 @@ export function LandingPage() {
       <FinalCTA />
       <Footer />
       <RecentPurchasePopup />
+      <TopRightNotifications />
       <WhatsAppFloat />
     </main>
   );
