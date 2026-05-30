@@ -33,6 +33,11 @@ import reviewHome1 from "@/assets/review-home-1.jpg";
 import reviewHome2 from "@/assets/review-home-2.jpg";
 import reviewHome3 from "@/assets/review-home-3.jpg";
 import reviewHome4 from "@/assets/review-home-4.jpg";
+import reviewHome5 from "@/assets/review-home-5.jpg";
+import reviewHome6 from "@/assets/review-home-6.jpg";
+import reviewHome7 from "@/assets/review-home-7.jpg";
+import reviewHome8 from "@/assets/review-home-8.jpg";
+import reviewHome9 from "@/assets/review-home-9.jpg";
 
 // ====== CONFIG FÁCIL DE EDITAR ======
 const BRAND = {
@@ -1202,7 +1207,7 @@ function PhotoReviews() {
       date: "há 2 semanas",
     },
     {
-      img: prodJoias,
+      img: reviewHome5,
       name: "Beatriz N.",
       city: "Florianópolis/SC",
       kit: "Kit Inferno",
@@ -1211,7 +1216,7 @@ function PhotoReviews() {
       date: "há 3 semanas",
     },
     {
-      img: prodCaixa,
+      img: reviewHome6,
       name: "Diego R.",
       city: "Niterói/RJ",
       kit: "Kit Paixão",
@@ -1220,7 +1225,7 @@ function PhotoReviews() {
       date: "há 1 mês",
     },
     {
-      img: prodVinho,
+      img: reviewHome7,
       name: "Rodrigo S.",
       city: "Vitória/ES",
       kit: "Kit Paixão",
@@ -1229,7 +1234,7 @@ function PhotoReviews() {
       date: "há 1 mês",
     },
     {
-      img: prodLingerie,
+      img: reviewHome8,
       name: "Marina P.",
       city: "São Paulo/SP",
       kit: "Kit Inferno",
@@ -1238,7 +1243,7 @@ function PhotoReviews() {
       date: "há 1 mês",
     },
     {
-      img: prodRosas,
+      img: reviewHome9,
       name: "Aline G.",
       city: "Belo Horizonte/MG",
       kit: "Kit Romance",
