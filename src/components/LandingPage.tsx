@@ -1436,6 +1436,7 @@ export function LandingPage() {
       <FinalCTA />
       <Footer />
       <RecentPurchasePopup />
+      <TopRightNotifications />
       <WhatsAppFloat />
     </main>
   );
