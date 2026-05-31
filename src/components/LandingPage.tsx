@@ -864,10 +864,17 @@ const RECENT_BUYERS = [
 function RecentPurchasePopup() {
   const [idx, setIdx] = useState(0);
   const [visible, setVisible] = useState(false);
+  const idxRef = useState({ current: 0 })[0];
   useEffect(() => {
     let i = 0;
     const cycle = () => {
-      setIdx(i % RECENT_BUYERS.length);
+      let next = i % RECENT_BUYERS.length;
+      // Evita repetir o mesmo nome duas vezes seguidas
+      if (i > 0 && RECENT_BUYERS[next].name === RECENT_BUYERS[idxRef.current].name) {
+        next = (next + 1) % RECENT_BUYERS.length;
+      }
+      idxRef.current = next;
+      setIdx(next);
       setVisible(true);
       setTimeout(() => setVisible(false), 4500);
       i++;
@@ -1441,7 +1448,6 @@ export function LandingPage() {
       <FinalCTA />
       <Footer />
       <RecentPurchasePopup />
-      <TopRightNotifications />
       <WhatsAppFloat />
     </main>
   );
