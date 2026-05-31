@@ -867,7 +867,12 @@ function RecentPurchasePopup() {
   useEffect(() => {
     let i = 0;
     const cycle = () => {
-      setIdx(i % RECENT_BUYERS.length);
+      let next = i % RECENT_BUYERS.length;
+      // Evita repetir o mesmo nome duas vezes seguidas
+      if (i > 0 && RECENT_BUYERS[next].name === RECENT_BUYERS[idx].name) {
+        next = (next + 1) % RECENT_BUYERS.length;
+      }
+      setIdx(next);
       setVisible(true);
       setTimeout(() => setVisible(false), 4500);
       i++;
