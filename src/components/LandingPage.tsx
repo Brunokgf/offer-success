@@ -29,11 +29,11 @@ import prodBaloes from "@/assets/produto-baloes.webp";
 import prodLingerie from "@/assets/produto-lingerie.webp";
 import prodVinho from "@/assets/produto-vinho.webp";
 import prodBombons from "@/assets/produto-bombons.jpg";
-import reviewHome1 from "@/assets/review-home-1.jpg";
-import reviewHome2 from "@/assets/review-home-2.jpg";
-import reviewHome3 from "@/assets/review-home-3.jpg";
-import reviewHome4 from "@/assets/review-home-4.jpg";
-import reviewHome5 from "@/assets/review-home-5.jpg";
+import socialProof1 from "@/assets/social-proof-1.png";
+import socialProof2 from "@/assets/social-proof-2.png";
+import socialProof3 from "@/assets/social-proof-3.png";
+import socialProof4 from "@/assets/social-proof-4.png";
+import socialProof5 from "@/assets/social-proof-5.png";
 import reviewHome6 from "@/assets/review-home-6.jpg";
 import reviewHome7 from "@/assets/review-home-7.jpg";
 import reviewHome8 from "@/assets/review-home-8.jpg";
@@ -1171,47 +1171,47 @@ function DeliveryCalculator() {
 function PhotoReviews() {
   const reviews = [
     {
-      img: reviewHome1,
+      img: socialProof1,
       name: "Larissa T.",
       city: "Campinas/SP",
       kit: "Kit Paixão",
-      text: "Chegou super rápido e a embalagem é linda de verdade. Montei na cabeceira do nosso quarto e ficou perfeito. Foto real, sem filtro nenhum 😍",
+      text: "Chegou certinho e a qualidade me surpreendeu. Tirei a foto na hora que abri porque ficou lindo demais ao vivo 😍",
       rating: 5,
       date: "há 3 dias",
     },
     {
-      img: reviewHome2,
+      img: socialProof2,
       name: "Camila & João",
       city: "Fortaleza/CE",
       kit: "Kit Inferno",
-      text: "Gente do céu, a caixa coração é MUITO melhor pessoalmente. As joias vieram numa caixinha de veludo separada. Vale cada centavo.",
+      text: "Montei tudo em casa e ficou exatamente esse visual. Vinho, joias, rosas e lingerie vieram muito bem embalados.",
       rating: 5,
       date: "há 1 semana",
     },
     {
-      img: reviewHome3,
+      img: socialProof3,
       name: "Patrícia L.",
       city: "Goiânia/GO",
-      kit: "Kit Inferno",
-      text: "Montei a surpresa no quarto exatamente como vi no site. Ele entrou e ficou sem palavras. Recomendo de olhos fechados 🔥",
+      kit: "Kit Romance",
+      text: "Comprei pra complementar a surpresa e ficou perfeito. A foto saiu linda e o chocolate veio intacto.",
       rating: 5,
       date: "há 2 semanas",
     },
     {
-      img: reviewHome4,
+      img: socialProof4,
       name: "Tatiane M.",
       city: "Sorocaba/SP",
-      kit: "Kit Romance",
-      text: "Servi de jantar surpresa em casa, ficou um charme. Os bombons são gourmet de verdade e o mapa estelar emoldurado é o ponto alto.",
+      kit: "Kit Inferno",
+      text: "Essa foi a foto que tiramos antes de entregar. O acabamento das peças e da caixa é muito mais premium do que eu esperava.",
       rating: 5,
       date: "há 2 semanas",
     },
     {
-      img: reviewHome5,
+      img: socialProof5,
       name: "Beatriz N.",
       city: "Florianópolis/SC",
       kit: "Kit Inferno",
-      text: "As joias chegaram lindas, embalagem perfeita. Meu noivo amou a surpresa 😍",
+      text: "Montei tudo no quarto e ficou surreal. Parece presente caro de boutique, não aquelas coisas simples de internet.",
       rating: 5,
       date: "há 3 semanas",
     },
